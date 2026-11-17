@@ -1,16 +1,1218 @@
 ---
+import '../styles/global.css';
+import {
+  Send, Mail, Sun, Moon, Github, ChevronDown, Menu, X, MapPin, Globe, Database, Server,
+  Terminal, Bug, Smartphone, Apple, GitBranch, Activity, Layers, Code2, Play, Square,
+  CheckCircle2, XCircle, AlertTriangle, Clock, ExternalLink, FileText, Sparkles, Bot,
+  Eye, Network, Boxes, Rocket, Figma, Users, GraduationCap, Briefcase, ArrowUpRight,
+  Filter, Search, RotateCcw, Container, Braces, FlaskConical, ListChecks, Workflow,
+  BarChart3, Download, Copy, Shuffle, Languages, PhoneCall, Radio, Printer, ArrowUp,
+  Target, Shield, Zap,
+} from 'lucide-astro';
+import {
+  profile, ticker, metrics, skills, skillGroups, levelLegend,
+  jobs, earlyCareer, stack, projects, tests, suites,
+} from '../data/cv';
+
+const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${p}`;
+
+const icons: Record<string, any> = {
+  Send, Mail, Github, Database, Server, Terminal, Bug, Smartphone, Apple, GitBranch,
+  Activity, Layers, Code2, Play, FlaskConical, BarChart3, Container, Boxes, Braces,
+  ListChecks, Workflow, Figma, Users, FileText, Sparkles, Bot, Network, Globe,
+  PhoneCall, Radio, Rocket, Eye,
+};
+
+const navLinks = [
+  { href: '#about', label: 'Обо мне' },
+  { href: '#results', label: 'Результаты' },
+  { href: '#experience', label: 'Опыт' },
+  { href: '#skills', label: 'Навыки' },
+  { href: '#console', label: 'Стенд' },
+  { href: '#stack', label: 'Стек' },
+  { href: '#projects', label: 'Проекты' },
+  { href: '#contacts', label: 'Контакты' },
+];
+
+const sectionMeta = [
+  { id: 'results', n: '01', title: 'Результаты в цифрах', sub: 'Только то, что могу подтвердить и объяснить на собеседовании', accent: 'var(--color-brand)' },
+  { id: 'experience', n: '02', title: 'Опыт работы', sub: 'Продукты, зона ответственности, результаты и процессы', accent: 'var(--color-pass)' },
+  { id: 'skills', n: '03', title: 'Навыки и уровень владения', sub: 'Шкала по частоте реального применения, а не по абстрактным процентам', accent: 'var(--color-flaky)' },
+  { id: 'console', n: '04', title: 'Стенд регрессионного прогона', sub: 'Интерактивная демонстрация того, как я мыслю прогон, ретраи и отчётность', accent: 'var(--color-cyan)' },
+  { id: 'stack', n: '05', title: 'Технический стек', sub: 'Инструменты по областям применения', accent: 'var(--color-skip)' },
+  { id: 'projects', n: '06', title: 'Проекты', sub: 'Автоматизация, этот сайт и продукт в разработке', accent: 'var(--color-magenta)' },
+];
+
+const statusMeta: Record<string, { label: string; color: string }> = {
+  pass: { label: 'PASS', color: 'var(--color-pass)' },
+  fail: { label: 'FAIL', color: 'var(--color-fail)' },
+  flaky: { label: 'FLAKY', color: 'var(--color-flaky)' },
+  skip: { label: 'SKIP', color: 'var(--color-skip)' },
+  pending: { label: 'QUEUE', color: '#5b6b8c' },
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="ru" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Данил Степанюк — QA Engineer Middle+. Web, iOS, Android, Backend. Интеграции, микросервисы, автоматизация на pytest и Playwright." />
+    <meta name="theme-color" content="#04060d" />
+    <meta property="og:title" content="Данил Степанюк · QA Engineer" />
+    <meta property="og:description" content="Портфолио инженера по тестированию: опыт, результаты, интерактивный стенд прогона." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <title>Данил Степанюк · QA Engineer Middle+</title>
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('qa-theme') || 'dark';
+          document.documentElement.classList.toggle('dark', t === 'dark');
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+
+  <body class="antialiased">
+    <div class="layer aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="layer grid-layer" aria-hidden="true"></div>
+    <div class="layer spotlight" aria-hidden="true"></div>
+    <div class="layer grain" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+
+    <!-- ================= HEADER ================= -->
+    <header class="fixed top-0 inset-x-0 z-50 border-b border-paperedge dark:border-edge bg-paper/85 dark:bg-void/80 backdrop-blur-xl">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        <a href="#about" class="flex items-center gap-2.5 shrink-0 group" aria-label="В начало">
+          <span class="relative grid place-items-center w-9 h-9 rounded-xl bg-graphite dark:bg-panel2 border border-paperedge dark:border-edge">
+            <Eye class="w-4.5 h-4.5 text-brand" style="width:18px;height:18px" />
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-pass border-2 border-paper dark:border-void"></span>
+          </span>
+          <span class="font-extrabold tracking-tight text-graphite dark:text-white">
+            illuminaty<span class="text-brand">.</span><span class="font-mono text-xs text-slate-500 dark:text-slate-400">qa</span>
+          </span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-5" aria-label="Основная навигация">
+          {navLinks.map((l) => (
+            <a href={l.href} class="nav-link text-[13px] font-semibold text-slate-600 dark:text-slate-400 hover:text-brand transition-colors" data-nav={l.href.slice(1)}>{l.label}</a>
+          ))}
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <button id="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="true"
+            class="grid place-items-center w-9 h-9 rounded-xl border border-paperedge dark:border-edge bg-paper2/70 dark:bg-panel2/70 hover:border-brand transition-colors">
+            <Sun class="hidden dark:block text-flaky" style="width:17px;height:17px" />
+            <Moon class="block dark:hidden text-brand" style="width:17px;height:17px" />
+          </button>
+          <a href={profile.telegram} target="_blank" rel="noopener"
+            class="hidden sm:inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-brand text-white text-[13px] font-bold hover:bg-cyan hover:text-graphite transition-colors">
+            <Send style="width:15px;height:15px" /> Написать
+          </a>
+          <button id="menu-btn" type="button" aria-label="Меню" aria-expanded="false"
+            class="lg:hidden grid place-items-center w-9 h-9 rounded-xl border border-paperedge dark:border-edge bg-paper2/70 dark:bg-panel2/70">
+            <Menu class="menu-open" style="width:18px;height:18px" />
+            <X class="menu-close hidden" style="width:18px;height:18px" />
+          </button>
+        </div>
+      </div>
+      <div class="h-0.5 bg-transparent"><div class="progress-line h-full bg-gradient-to-r from-brand via-cyan to-pass"></div></div>
+
+      <div id="drawer" class="drawer lg:hidden absolute inset-x-0 top-full border-b border-paperedge dark:border-edge bg-paper/97 dark:bg-void/97 backdrop-blur-xl">
+        <nav class="max-w-6xl mx-auto px-4 py-4 grid grid-cols-2 gap-2" aria-label="Мобильная навигация">
+          {navLinks.map((l) => (
+            <a href={l.href} class="drawer-link px-3 py-2.5 rounded-xl text-sm font-semibold border border-paperedge dark:border-edge bg-paper2/60 dark:bg-panel2/60">{l.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <main class="relative z-10 max-w-6xl mx-auto px-4 pt-24 pb-20">
+
+      <!-- ================= HERO ================= -->
+      <section id="about" class="pt-8 pb-14">
+        <div class="grid lg:grid-cols-[1.35fr_1fr] gap-12 items-center">
+          <div class="reveal">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-pass/40 bg-pass/10 mb-6">
+              <span class="led"></span>
+              <span class="font-mono text-[11px] font-bold tracking-widest text-pass uppercase">Open to work · Remote</span>
+            </div>
+
+            <h1 class="text-[2.6rem] leading-[1.05] sm:text-6xl font-extrabold tracking-tight text-graphite dark:text-white mb-4">
+              Данил<br class="sm:hidden" /> Степанюк
+            </h1>
+
+            <p class="font-mono text-sm sm:text-base text-brand mb-6">
+              QA Engineer · Middle+ · 4.5 года в тестировании
+            </p>
+
+            <p class="text-[15px] sm:text-[17px] leading-relaxed text-slate-600 dark:text-slate-400 max-w-2xl mb-8">
+              {profile.tagline}
+            </p>
+
+            <div class="flex flex-wrap gap-3 mb-8">
+              <a href={profile.telegram} target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 px-5 h-12 rounded-xl bg-brand text-white font-bold hover:-translate-y-0.5 hover:bg-cyan hover:text-graphite transition-all shadow-lg shadow-brand/25">
+                <Send style="width:17px;height:17px" /> Telegram
+              </a>
+              <a href={`mailto:${profile.email}`}
+                class="inline-flex items-center gap-2 px-5 h-12 rounded-xl border border-paperedge dark:border-edge font-bold hover:-translate-y-0.5 hover:border-brand transition-all">
+                <Mail style="width:17px;height:17px" /> Email
+              </a>
+              <button id="print-cv" type="button"
+                class="no-print inline-flex items-center gap-2 px-5 h-12 rounded-xl border border-paperedge dark:border-edge font-bold hover:-translate-y-0.5 hover:border-pass transition-all">
+                <Printer style="width:17px;height:17px" /> Сохранить CV в PDF
+              </button>
+            </div>
+
+            <div class="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-slate-500 dark:text-slate-500">
+              <span class="inline-flex items-center gap-1.5"><MapPin style="width:14px;height:14px" /> {profile.location}</span>
+              <span class="inline-flex items-center gap-1.5"><Globe style="width:14px;height:14px" /> {profile.format}</span>
+              <span class="inline-flex items-center gap-1.5"><Languages style="width:14px;height:14px" /> {profile.english}</span>
+            </div>
+          </div>
+
+          <!-- PHOTO -->
+          <div class="reveal flex justify-center lg:justify-end">
+            <div class="photo-wrap relative w-[270px] h-[330px] sm:w-[310px] sm:h-[380px]" id="photo">
+              <div class="photo-ring" aria-hidden="true"></div>
+              <div class="orbit" aria-hidden="true"><span></span></div>
+              <div class="photo-tilt relative w-full h-full">
+                <div class="photo-frame w-full h-full">
+                  <img src={asset('avatar.jpg')} alt="Данил Степанюк, QA Engineer" width="310" height="380" />
+                  <div class="photo-sweep" aria-hidden="true"></div>
+                  <span class="bracket tl"></span><span class="bracket tr"></span>
+                  <span class="bracket bl"></span><span class="bracket br"></span>
+                  <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-void/90 to-transparent">
+                    <div class="font-mono text-[10px] tracking-widest text-pass">IDENTITY VERIFIED</div>
+                    <div class="font-mono text-[10px] text-slate-400">qa-engineer · middle+</div>
+                  </div>
+                </div>
+              </div>
+              <div class="float-chip absolute -left-5 top-10 panel px-3 py-2 shadow-xl">
+                <div class="font-mono text-[10px] text-slate-500">REGRESSION</div>
+                <div class="font-bold text-sm text-pass">−50% времени</div>
+              </div>
+              <div class="float-chip b absolute -right-4 top-1/3 panel px-3 py-2 shadow-xl">
+                <div class="font-mono text-[10px] text-slate-500">PLATFORMS</div>
+                <div class="font-bold text-sm text-cyan">Web · iOS · Android</div>
+              </div>
+              <div class="float-chip c absolute -left-3 bottom-8 panel px-3 py-2 shadow-xl">
+                <div class="font-mono text-[10px] text-slate-500">ROLE</div>
+                <div class="font-bold text-sm text-flaky">Sole QA in team</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TICKER -->
+        <div class="ticker mt-14 py-3 border-y border-paperedge dark:border-edge">
+          <div class="ticker-track font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-500">
+            {[...ticker, ...ticker].map((t) => (
+              <span class="inline-flex items-center gap-2 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-pass"></span>{t}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RESULTS ================= -->
+      <section id="results" class="py-14" style="--accent: var(--color-brand)">
+        <div class="reveal flex items-start gap-4 mb-9">
+          <span class="font-mono text-xs text-brand pt-2">01</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Результаты в цифрах</h2>
+            <p class="text-sm text-slate-500 mt-1">Только то, что могу подтвердить и объяснить на собеседовании</p>
+          </div>
+          <span class="hidden sm:block h-px flex-1 max-w-[160px] mt-5 bg-gradient-to-r from-brand to-transparent"></span>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {metrics.map((m, i) => (
+            <article class="reveal panel glow-card p-5 flex flex-col" style={`--accent:${m.accent}; transition-delay:${i * 45}ms`}>
+              <div class="flex items-start justify-between gap-2 mb-3">
+                <div class="text-[2rem] leading-none font-extrabold" style={`color:${m.accent}`}>
+                  {m.display ? m.display : (<><span data-num={m.num} data-dec={m.dec ?? 0}>0</span>{m.suffix}</>)}
+                </div>
+                {m.delta && <span class="font-mono text-[10px] px-2 py-1 rounded-md bg-pass/12 text-pass border border-pass/30">{m.delta}</span>}
+              </div>
+              <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100 mb-2">{m.label}</h3>
+              <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-500 flex-1">{m.note}</p>
+              <div class="mt-4 h-8 flex items-end gap-1" aria-hidden="true">
+                {m.viz === 'spark' && m.series?.map((v, k) => (
+                  <span class="flex-1 rounded-sm" style={`height:${20 + (v / Math.max(...m.series!)) * 80}%; background:${m.accent}; opacity:${0.25 + (k / m.series!.length) * 0.75}`}></span>
+                ))}
+                {m.viz === 'bars' && m.series?.map((v, k) => (
+                  <span class="flex-1 rounded-sm" style={`height:${(v / Math.max(...m.series!)) * 100}%; background:${m.accent}; opacity:${0.3 + (k / m.series!.length) * 0.7}`}></span>
+                ))}
+                {m.viz === 'ring' && (
+                  <div class="flex gap-1.5 w-full">
+                    {['Web', 'iOS', 'Android'].map((p) => (
+                      <span class="flex-1 text-center font-mono text-[9px] py-1 rounded-md border" style={`border-color:${m.accent}; color:${m.accent}`}>{p}</span>
+                    ))}
+                  </div>
+                )}
+                {m.viz === 'split' && (
+                  <div class="w-full h-2 rounded-full overflow-hidden flex">
+                    <span class="h-full" style={`width:50%; background:${m.accent}`}></span>
+                    <span class="h-full flex-1" style={`background:color-mix(in oklab, ${m.accent} 25%, transparent)`}></span>
+                  </div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- ================= EXPERIENCE ================= -->
+      <section id="experience" class="py-14" style="--accent: var(--color-pass)">
+        <div class="reveal flex items-start gap-4 mb-9">
+          <span class="font-mono text-xs text-pass pt-2">02</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Опыт работы</h2>
+            <p class="text-sm text-slate-500 mt-1">Продукты, зона ответственности, результаты и процессы</p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          {jobs.map((job, idx) => (
+            <article class="reveal panel glow-card overflow-hidden" style={`--accent:${job.accent}`}>
+              <div class="p-6 sm:p-7">
+                <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                      <Briefcase style="width:16px;height:16px;color:var(--color-pass)" />
+                      <h3 class="text-xl font-extrabold text-graphite dark:text-white">{job.role}</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      {job.url
+                        ? <a href={job.url} target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-bold hover:underline" style={`color:${job.accent}`}>{job.company}<ExternalLink style="width:13px;height:13px" /></a>
+                        : <span class="font-bold" style={`color:${job.accent}`}>{job.company}</span>}
+                      <span class="text-xs text-slate-500">{job.place}</span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="font-mono text-xs text-slate-500">{job.period}</div>
+                    <div class="font-mono text-[11px] mt-1 px-2 py-0.5 rounded-md border border-paperedge dark:border-edge inline-block">{job.duration}</div>
+                  </div>
+                </div>
+
+                <p class="text-[14px] leading-relaxed text-slate-600 dark:text-slate-400 mb-5">{job.context}</p>
+
+                <div class="grid md:grid-cols-3 gap-3 mb-5">
+                  {job.wins.map((w) => (
+                    <div class="rounded-xl p-4 border border-paperedge dark:border-edge bg-paper2/50 dark:bg-panel2/40">
+                      <div class="flex items-center gap-2 mb-2">
+                        <Target style="width:14px;height:14px" />
+                        <h4 class="font-bold text-[13px]" style={`color:${job.accent}`}>{w.title}</h4>
+                      </div>
+                      <p class="text-[12px] leading-relaxed text-slate-600 dark:text-slate-400">{w.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="flex flex-wrap gap-1.5 mb-5">
+                  {job.stack.map((s) => <span class="chip font-mono">{s}</span>)}
+                </div>
+
+                <button type="button" class="acc-btn no-print inline-flex items-center gap-2 text-[13px] font-bold hover:gap-3 transition-all" style={`color:${job.accent}`} aria-expanded={idx === 0 ? 'true' : 'false'}>
+                  <span class="acc-label">{idx === 0 ? 'Свернуть подробности' : 'Показать обязанности и процессы'}</span>
+                  <ChevronDown class="chev" style="width:15px;height:15px" />
+                </button>
+              </div>
+
+              <div class={`acc no-print ${idx === 0 ? 'open' : ''}`}>
+                <div>
+                  <div class="px-6 sm:px-7 pb-7 pt-1 grid md:grid-cols-2 gap-6 border-t border-paperedge dark:border-edge">
+                    <div>
+                      <h4 class="font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-3 mt-4">Зона ответственности</h4>
+                      <ul class="space-y-2.5">
+                        {job.duties.map((d) => (
+                          <li class="flex gap-2.5 text-[13px] leading-relaxed text-slate-600 dark:text-slate-400">
+                            <span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={`background:${job.accent}`}></span><span>{d}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 class="font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-3 mt-4">Как был устроен процесс</h4>
+                      <ul class="space-y-2.5">
+                        {job.process.map((p) => (
+                          <li class="flex gap-2.5 text-[13px] leading-relaxed text-slate-600 dark:text-slate-400">
+                            <span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-slate-400"></span><span>{p}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="reveal panel p-6 mt-6">
+          <h3 class="font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-4">До QA: телеком и техническая поддержка</h3>
+          <div class="space-y-4">
+            {earlyCareer.map((e) => (
+              <div class="flex flex-col sm:flex-row gap-1 sm:gap-5 sm:items-baseline border-l-2 border-paperedge dark:border-edge pl-4">
+                <span class="font-mono text-[11px] text-slate-500 sm:w-56 shrink-0">{e.period}</span>
+                <div>
+                  <div class="font-bold text-sm text-graphite dark:text-slate-200">{e.company} · <span class="font-medium text-slate-500">{e.role}</span></div>
+                  <p class="text-[12px] text-slate-500 mt-0.5">{e.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SKILLS ================= -->
+      <section id="skills" class="py-14" style="--accent: var(--color-flaky)">
+        <div class="reveal flex items-start gap-4 mb-6">
+          <span class="font-mono text-xs text-flaky pt-2">03</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Навыки и уровень владения</h2>
+            <p class="text-sm text-slate-500 mt-1">Шкала по частоте реального применения, а не по абстрактным процентам</p>
+          </div>
+        </div>
+
+        <div class="reveal panel p-4 mb-5 flex flex-wrap gap-x-5 gap-y-1.5">
+          {levelLegend.map((l) => <span class="font-mono text-[11px] text-slate-500">{l}</span>)}
+        </div>
+
+        <div class="reveal flex flex-wrap gap-2 mb-6" id="skill-filters" role="group" aria-label="Фильтр навыков">
+          {skillGroups.map((g, i) => (
+            <button type="button" data-group={g.id} aria-pressed={i === 0 ? 'true' : 'false'}
+              class="skill-filter px-3.5 py-2 rounded-xl text-[12px] font-bold border transition-all"
+              style={`--accent:${g.accent}`}>{g.label}</button>
+          ))}
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-3" id="skill-list">
+          {skills.map((s) => {
+            const g = skillGroups.find((x) => x.id === s.group)!;
+            return (
+              <article class="skill-item reveal panel glow-card p-4" data-group={s.group} style={`--accent:${g.accent}`}>
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100">{s.name}</h3>
+                  <span class="font-mono text-[11px] shrink-0 px-2 py-0.5 rounded-md border" style={`color:${g.accent}; border-color:color-mix(in oklab, ${g.accent} 40%, transparent)`}>{s.level}/5</span>
+                </div>
+                <div class="flex gap-1.5 mb-2.5" aria-hidden="true">
+                  {[1, 2, 3, 4, 5].map((n) => <span class={`seg flex-1 ${n <= s.level ? 'on' : ''}`}></span>)}
+                </div>
+                <p class="text-[11.5px] leading-relaxed text-slate-500">{s.evidence}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- ================= CONSOLE ================= -->
+      <section id="console" class="py-14" style="--accent: var(--color-cyan)">
+        <div class="reveal flex items-start gap-4 mb-3">
+          <span class="font-mono text-xs text-cyan pt-2">04</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Стенд регрессионного прогона</h2>
+            <p class="text-sm text-slate-500 mt-1">Интерактивная демонстрация того, как я мыслю прогон, ретраи и отчётность</p>
+          </div>
+        </div>
+        <p class="reveal text-[12px] text-slate-500 mb-6 max-w-3xl">
+          Данные синтетические и воспроизводят типовой набор проверок CCaaS-платформы. Стенд показывает подход: параллельные воркеры, ретраи нестабильных сценариев, fail-fast, разделение pass / flaky / fail и выгрузка отчёта. Всё считается в браузере.
+        </p>
+
+        <div class="reveal panel overflow-hidden" id="run-console">
+          <!-- toolbar -->
+          <div class="p-5 border-b border-paperedge dark:border-edge grid gap-5 lg:grid-cols-[1.1fr_1fr]">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <label class="block">
+                <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Набор</span>
+                <select id="c-suite" class="mt-1.5 w-full h-10 px-3 rounded-xl border border-paperedge dark:border-edge bg-paper2 dark:bg-panel2 text-[13px] font-semibold">
+                  {suites.map((s) => <option value={s.id} selected={s.id === 'regression'}>{s.label}</option>)}
+                </select>
+                <span id="c-suite-note" class="block mt-1 text-[10.5px] text-slate-500"></span>
+              </label>
+
+              <label class="block">
+                <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Скорость · <span id="c-speed-out">2.0x</span></span>
+                <input id="c-speed" type="range" min="0.5" max="6" step="0.5" value="2" class="range w-full mt-4" />
+                <span class="block mt-2 text-[10.5px] text-slate-500">Ускорение симуляции времени</span>
+              </label>
+
+              <div>
+                <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Воркеры</span>
+                <div class="mt-1.5 flex items-center gap-2">
+                  <button type="button" id="c-workers-minus" class="w-9 h-10 rounded-xl border border-paperedge dark:border-edge font-bold hover:border-cyan transition-colors" aria-label="Меньше воркеров">−</button>
+                  <span id="c-workers-out" class="flex-1 h-10 grid place-items-center rounded-xl border border-paperedge dark:border-edge font-mono font-bold text-cyan">3</span>
+                  <button type="button" id="c-workers-plus" class="w-9 h-10 rounded-xl border border-paperedge dark:border-edge font-bold hover:border-cyan transition-colors" aria-label="Больше воркеров">+</button>
+                </div>
+                <span class="block mt-1 text-[10.5px] text-slate-500">Параллельных потоков: 1–6</span>
+              </div>
+
+              <div>
+                <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Ретраи</span>
+                <div class="mt-1.5 flex items-center gap-2">
+                  <button type="button" id="c-retries-minus" class="w-9 h-10 rounded-xl border border-paperedge dark:border-edge font-bold hover:border-flaky transition-colors" aria-label="Меньше ретраев">−</button>
+                  <span id="c-retries-out" class="flex-1 h-10 grid place-items-center rounded-xl border border-paperedge dark:border-edge font-mono font-bold text-flaky">1</span>
+                  <button type="button" id="c-retries-plus" class="w-9 h-10 rounded-xl border border-paperedge dark:border-edge font-bold hover:border-flaky transition-colors" aria-label="Больше ретраев">+</button>
+                </div>
+                <span class="block mt-1 text-[10.5px] text-slate-500">Повтор упавшего теста: 0–3</span>
+              </div>
+            </div>
+
+            <div class="grid gap-3 content-start">
+              <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border border-paperedge dark:border-edge">
+                <span class="text-[12px] font-semibold">Fail-fast: остановить прогон на первом падении</span>
+                <button type="button" id="c-failfast" class="switch" aria-pressed="false" aria-label="Fail-fast"></button>
+              </div>
+              <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border border-paperedge dark:border-edge">
+                <span class="text-[12px] font-semibold">Симулировать нестабильность сети и устройств</span>
+                <button type="button" id="c-flaky" class="switch" aria-pressed="true" aria-label="Нестабильность"></button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="c-run" class="inline-flex items-center gap-2 px-4 h-10 rounded-xl bg-pass text-graphite font-bold text-[13px] hover:brightness-110 transition-all">
+                  <Play style="width:15px;height:15px" /> Запустить
+                </button>
+                <button type="button" id="c-stop" class="inline-flex items-center gap-2 px-4 h-10 rounded-xl border border-fail/50 text-fail font-bold text-[13px] hover:bg-fail/10 transition-all disabled:opacity-40" disabled>
+                  <Square style="width:14px;height:14px" /> Стоп
+                </button>
+                <button type="button" id="c-reset" class="inline-flex items-center gap-2 px-3 h-10 rounded-xl border border-paperedge dark:border-edge font-bold text-[13px] hover:border-brand transition-all">
+                  <RotateCcw style="width:14px;height:14px" /> Сброс
+                </button>
+                <button type="button" id="c-seed" class="inline-flex items-center gap-2 px-3 h-10 rounded-xl border border-paperedge dark:border-edge font-bold text-[13px] hover:border-skip transition-all">
+                  <Shuffle style="width:14px;height:14px" /> Новый seed
+                </button>
+              </div>
+              <div class="font-mono text-[10.5px] text-slate-500">seed: <span id="c-seed-out">20261117</span> · детерминированный генератор, результат воспроизводим</div>
+            </div>
+          </div>
+
+          <!-- summary -->
+          <div class="p-5 grid lg:grid-cols-[1fr_auto] gap-6 items-center border-b border-paperedge dark:border-edge">
+            <div>
+              <div class="flex flex-wrap items-center gap-3 mb-3">
+                <span id="c-verdict" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[11px] font-bold border" style="color:#5b6b8c;border-color:#5b6b8c55">
+                  <span class="w-2 h-2 rounded-full bg-current"></span> IDLE · ожидает запуска
+                </span>
+                <span class="font-mono text-[11px] text-slate-500 inline-flex items-center gap-1.5"><Clock style="width:13px;height:13px" /><span id="c-elapsed">00:00.0</span></span>
+                <span class="font-mono text-[11px] text-slate-500">выполнено <span id="c-done">0</span>/<span id="c-total">0</span></span>
+              </div>
+              <div class="h-2.5 rounded-full bg-paperedge dark:bg-panel2 overflow-hidden">
+                <div id="c-progress" class="h-full rounded-full transition-[width] duration-300" style="width:0%;background:linear-gradient(90deg,var(--color-brand),var(--color-cyan),var(--color-pass))"></div>
+              </div>
+              <div class="flex flex-wrap gap-2 mt-4" id="c-counts" aria-live="polite">
+                {Object.entries(statusMeta).map(([k, v]) => (
+                  <span class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border font-mono text-[11px]" style={`border-color:color-mix(in oklab, ${v.color} 35%, transparent); color:${v.color}`}>
+                    <span class="w-2 h-2 rounded-sm" style={`background:${v.color}`}></span>{v.label}
+                    <b data-count={k}>0</b>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-5 justify-center">
+              <svg viewBox="0 0 120 120" class="donut w-[124px] h-[124px] -rotate-90" role="img" aria-label="Распределение результатов прогона">
+                <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" class="text-paperedge dark:text-panel2" stroke-width="14"></circle>
+                <circle data-arc="pass" cx="60" cy="60" r="46" fill="none" stroke="var(--color-pass)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
+                <circle data-arc="flaky" cx="60" cy="60" r="46" fill="none" stroke="var(--color-flaky)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="butt"></circle>
+                <circle data-arc="fail" cx="60" cy="60" r="46" fill="none" stroke="var(--color-fail)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
+                <circle data-arc="skip" cx="60" cy="60" r="46" fill="none" stroke="var(--color-skip)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
+              </svg>
+              <div class="font-mono text-[11px] space-y-1.5">
+                <div class="text-slate-500">Распределение</div>
+                <div class="text-pass">pass · сплошная</div>
+                <div class="text-flaky">flaky · ретрай</div>
+                <div class="text-fail">fail · падение</div>
+                <div class="text-skip">skip · пропущен</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- filters + list + log -->
+          <div class="grid lg:grid-cols-[1.15fr_1fr]">
+            <div class="p-5 border-b lg:border-b-0 lg:border-r border-paperedge dark:border-edge">
+              <div class="flex flex-wrap gap-2 mb-3">
+                <div class="relative flex-1 min-w-[170px]">
+                  <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" style="width:14px;height:14px" />
+                  <input id="c-search" type="search" placeholder="Поиск по названию или группе" aria-label="Поиск теста"
+                    class="w-full h-9 pl-9 pr-3 rounded-xl border border-paperedge dark:border-edge bg-paper2 dark:bg-panel2 text-[12px]" />
+                </div>
+                <select id="c-sort" aria-label="Сортировка" class="h-9 px-3 rounded-xl border border-paperedge dark:border-edge bg-paper2 dark:bg-panel2 text-[12px] font-semibold">
+                  <option value="order">По порядку</option>
+                  <option value="status">По статусу</option>
+                  <option value="duration">По длительности</option>
+                  <option value="name">По имени</option>
+                </select>
+              </div>
+              <div class="flex flex-wrap gap-1.5 mb-3" id="c-status-filters" role="group" aria-label="Фильтр по статусу">
+                {['all', 'pass', 'flaky', 'fail', 'skip', 'pending'].map((s, i) => (
+                  <button type="button" data-status={s} aria-pressed={i === 0 ? 'true' : 'false'}
+                    class="c-sfilter px-2.5 py-1 rounded-lg font-mono text-[10.5px] border border-paperedge dark:border-edge uppercase">{s}</button>
+                ))}
+              </div>
+              <div id="c-list" class="space-y-1 max-h-[340px] overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Лог прогона</span>
+                <div class="flex gap-2">
+                  <button type="button" id="c-copy" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-paperedge dark:border-edge font-mono text-[10.5px] hover:border-cyan transition-colors">
+                    <Copy style="width:12px;height:12px" /> сводка
+                  </button>
+                  <button type="button" id="c-export" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-paperedge dark:border-edge font-mono text-[10.5px] hover:border-pass transition-colors">
+                    <Download style="width:12px;height:12px" /> report.json
+                  </button>
+                </div>
+              </div>
+              <div id="c-log" class="term log-scroll h-[340px] overflow-y-auto p-3" aria-live="polite" aria-label="Лог прогона"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STACK ================= -->
+      <section id="stack" class="py-14" style="--accent: var(--color-skip)">
+        <div class="reveal flex items-start gap-4 mb-6">
+          <span class="font-mono text-xs text-skip pt-2">05</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Технический стек</h2>
+            <p class="text-sm text-slate-500 mt-1">Инструменты по областям применения</p>
+          </div>
+        </div>
+
+        <div class="reveal flex flex-wrap gap-2 mb-6" id="stack-filters" role="group" aria-label="Фильтр категорий стека">
+          <button type="button" data-cat="all" aria-pressed="true" class="stack-filter px-3.5 py-2 rounded-xl text-[12px] font-bold border transition-all" style="--accent:var(--color-brand)">Все области</button>
+          {stack.map((c) => (
+            <button type="button" data-cat={c.id} aria-pressed="false" class="stack-filter px-3.5 py-2 rounded-xl text-[12px] font-bold border transition-all" style={`--accent:${c.accent}`}>{c.title}</button>
+          ))}
+        </div>
+
+        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4" id="stack-grid">
+          {stack.map((cat) => {
+            const CatIcon = icons[cat.icon];
+            return (
+              <article class="stack-item reveal panel glow-card p-5" data-cat={cat.id} style={`--accent:${cat.accent}`}>
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="grid place-items-center w-10 h-10 rounded-xl border" style={`border-color:color-mix(in oklab, ${cat.accent} 40%, transparent); background:color-mix(in oklab, ${cat.accent} 12%, transparent); color:${cat.accent}`}>
+                    <CatIcon style="width:19px;height:19px" />
+                  </span>
+                  <h3 class="font-extrabold text-[15px] text-graphite dark:text-white">{cat.title}</h3>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {cat.items.map((it) => {
+                    const I = icons[it.icon];
+                    return (
+                      <span class="chip" style={`--accent:${cat.accent}`}>
+                        <I style="width:13px;height:13px" />
+                        <span class="font-medium">{it.name}</span>
+                      </span>
+                    );
+                  })}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- ================= PROJECTS ================= -->
+      <section id="projects" class="py-14" style="--accent: var(--color-magenta)">
+        <div class="reveal flex items-start gap-4 mb-9">
+          <span class="font-mono text-xs text-magenta pt-2">06</span>
+          <div class="flex-1">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Проекты</h2>
+            <p class="text-sm text-slate-500 mt-1">Автоматизация, этот сайт и продукт в разработке</p>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+          {projects.map((p) => {
+            const PIcon = icons[p.icon];
+            return (
+              <article class="reveal panel glow-card p-6 flex flex-col" style={`--accent:${p.accent}`}>
+                <div class="flex items-start justify-between mb-4">
+                  <span class="grid place-items-center w-11 h-11 rounded-xl border" style={`border-color:color-mix(in oklab, ${p.accent} 40%, transparent); background:color-mix(in oklab, ${p.accent} 12%, transparent); color:${p.accent}`}>
+                    <PIcon style="width:20px;height:20px" />
+                  </span>
+                  <span class="font-mono text-[10px] px-2 py-1 rounded-md border" style={`color:${p.accent}; border-color:color-mix(in oklab, ${p.accent} 35%, transparent)`}>{p.status}</span>
+                </div>
+                <h3 class="font-extrabold text-lg text-graphite dark:text-white mb-2">{p.name}</h3>
+                <p class="text-[13px] leading-relaxed text-slate-600 dark:text-slate-400 mb-4">{p.summary}</p>
+                <ul class="space-y-2 mb-5 flex-1">
+                  {p.points.map((pt) => (
+                    <li class="flex gap-2 text-[12px] leading-relaxed text-slate-500">
+                      <span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={`background:${p.accent}`}></span><span>{pt}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="flex flex-wrap gap-1.5">
+                  {p.stack.map((s) => <span class="chip font-mono" style={`--accent:${p.accent}`}>{s}</span>)}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- ================= CONTACTS ================= -->
+      <section id="contacts" class="py-14" style="--accent: var(--color-brand)">
+        <div class="reveal panel glow-card p-7 sm:p-10">
+          <div class="grid lg:grid-cols-[1.2fr_1fr] gap-9">
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white mb-3">Связаться со мной</h2>
+              <p class="text-[14px] leading-relaxed text-slate-600 dark:text-slate-400 mb-6 max-w-xl">
+                Открыт к предложениям по удалённой работе. Быстрее всего отвечаю в Telegram. Готов обсудить продукт, процессы качества и то, чем могу быть полезен команде.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <a href={profile.telegram} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 h-12 rounded-xl bg-brand text-white font-bold hover:-translate-y-0.5 hover:bg-cyan hover:text-graphite transition-all shadow-lg shadow-brand/25">
+                  <Send style="width:17px;height:17px" /> {profile.telegramLabel}
+                </a>
+                <a href={`mailto:${profile.email}`} class="inline-flex items-center gap-2 px-5 h-12 rounded-xl border border-paperedge dark:border-edge font-bold hover:-translate-y-0.5 hover:border-brand transition-all">
+                  <Mail style="width:17px;height:17px" /> {profile.email}
+                </a>
+                <a href={profile.setka} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 h-12 rounded-xl border border-paperedge dark:border-edge font-bold hover:-translate-y-0.5 hover:border-pass transition-all">
+                  <Users style="width:17px;height:17px" /> Профиль в Setka <ArrowUpRight style="width:14px;height:14px" />
+                </a>
+              </div>
+            </div>
+
+            <div class="grid gap-3 content-start">
+              {[
+                { icon: MapPin, label: 'Локация', value: profile.location },
+                { icon: Globe, label: 'Формат', value: profile.format },
+                { icon: Languages, label: 'Языки', value: `${profile.russian}; ${profile.english}` },
+                { icon: GraduationCap, label: 'Образование', value: profile.education },
+                { icon: Shield, label: 'Занятость', value: profile.employment },
+              ].map((row) => {
+                const RIcon = row.icon;
+                return (
+                  <div class="flex items-start gap-3 p-3 rounded-xl border border-paperedge dark:border-edge">
+                    <span class="grid place-items-center w-8 h-8 rounded-lg bg-brand/10 text-brand shrink-0"><RIcon style="width:15px;height:15px" /></span>
+                    <div>
+                      <div class="font-mono text-[10px] uppercase tracking-widest text-slate-500">{row.label}</div>
+                      <div class="text-[12.5px] font-semibold text-graphite dark:text-slate-200">{row.value}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="relative z-10 border-t border-paperedge dark:border-edge">
+      <div class="max-w-6xl mx-auto px-4 py-7 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="font-mono text-[11px] text-slate-500">© 2026 Данил Степанюк · Astro · Tailwind CSS · GitHub Actions</p>
+        <p class="font-mono text-[11px] text-slate-500 inline-flex items-center gap-2"><span class="led"></span> build passing</p>
+      </div>
+    </footer>
+
+    <button id="to-top" type="button" aria-label="Наверх"
+      class="no-print fixed bottom-6 right-6 z-50 grid place-items-center w-12 h-12 rounded-2xl bg-brand text-white shadow-xl shadow-brand/30 opacity-0 pointer-events-none transition-all hover:bg-cyan hover:text-graphite">
+      <ArrowUp style="width:19px;height:19px" />
+    </button>
+
+    <script>
+      import { tests, suites } from '../data/cv';
+
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      /* ---------------- theme ---------------- */
+      const root = document.documentElement;
+      const themeBtn = $('#theme-toggle');
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      const syncTheme = () => {
+        const dark = root.classList.contains('dark');
+        themeBtn?.setAttribute('aria-pressed', String(dark));
+        metaTheme?.setAttribute('content', dark ? '#04060d' : '#f3f0e9');
+      };
+      syncTheme();
+      themeBtn?.addEventListener('click', () => {
+        root.classList.toggle('dark');
+        try { localStorage.setItem('qa-theme', root.classList.contains('dark') ? 'dark' : 'light'); } catch (e) {}
+        syncTheme();
+      });
+
+      /* ---------------- mobile menu ---------------- */
+      const menuBtn = $('#menu-btn');
+      const drawer = $('#drawer');
+      const setMenu = (open) => {
+        drawer?.classList.toggle('open', open);
+        menuBtn?.setAttribute('aria-expanded', String(open));
+        $('.menu-open', menuBtn)?.classList.toggle('hidden', open);
+        $('.menu-close', menuBtn)?.classList.toggle('hidden', !open);
+      };
+      menuBtn?.addEventListener('click', () => setMenu(!drawer.classList.contains('open')));
+      $$('.drawer-link').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+
+      /* ---------------- pointer: one rAF loop ---------------- */
+      if (fine && !reduced) {
+        const ring = $('#cursor-ring');
+        const photo = $('#photo');
+        const tilt = photo ? $('.photo-tilt', photo) : null;
+        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        let rx = mx, ry = my, tx = 0, ty = 0, ctx = 0, cty = 0;
+
+        window.addEventListener('pointermove', (e) => {
+          mx = e.clientX; my = e.clientY;
+          root.style.setProperty('--mx', mx + 'px');
+          root.style.setProperty('--my', my + 'px');
+          ring?.classList.add('on');
+          const hot = e.target instanceof Element && !!e.target.closest('a,button,input,select,.glow-card');
+          ring?.classList.toggle('hot', hot);
+          if (photo) {
+            const r = photo.getBoundingClientRect();
+            const inside = mx > r.left - 40 && mx < r.right + 40 && my > r.top - 40 && my < r.bottom + 40;
+            if (inside) {
+              tx = ((my - (r.top + r.height / 2)) / r.height) * -12;
+              ty = ((mx - (r.left + r.width / 2)) / r.width) * 14;
+            } else { tx = 0; ty = 0; }
+          }
+        }, { passive: true });
+        window.addEventListener('pointerleave', () => ring?.classList.remove('on'));
+
+        const loop = () => {
+          rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+          root.style.setProperty('--rx', rx.toFixed(1) + 'px');
+          root.style.setProperty('--ry', ry.toFixed(1) + 'px');
+          ctx += (tx - ctx) * 0.09; cty += (ty - cty) * 0.09;
+          if (tilt) { tilt.style.setProperty('--tx', ctx.toFixed(2) + 'deg'); tilt.style.setProperty('--ty', cty.toFixed(2) + 'deg'); }
+          requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+
+        $$('.glow-card').forEach((card) => {
+          card.addEventListener('pointermove', (e) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--cx', (e.clientX - r.left) + 'px');
+            card.style.setProperty('--cy', (e.clientY - r.top) + 'px');
+          }, { passive: true });
+        });
+      }
+
+      /* ---------------- reveal + count up ---------------- */
+      const countUp = (el) => {
+        const target = parseFloat(el.dataset.num || '0');
+        const dec = parseInt(el.dataset.dec || '0', 10);
+        if (reduced) { el.textContent = target.toFixed(dec); return; }
+        const t0 = performance.now(), dur = 1000;
+        const step = (t) => {
+          const p = Math.min(1, (t - t0) / dur);
+          el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          en.target.classList.add('in');
+          $$('[data-num]', en.target).forEach(countUp);
+          io.unobserve(en.target);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      $$('.reveal').forEach((el) => io.observe(el));
+
+      /* ---------------- scrollspy + progress + to top ---------------- */
+      const navMap = new Map($$('[data-nav]').map((a) => [a.dataset.nav, a]));
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          navMap.forEach((a) => a.classList.remove('active'));
+          navMap.get(en.target.id)?.classList.add('active');
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      $$('main section[id]').forEach((s) => spy.observe(s));
+
+      const toTop = $('#to-top');
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const h = document.documentElement.scrollHeight - window.innerHeight;
+          root.style.setProperty('--scroll', (h > 0 ? (window.scrollY / h) * 100 : 0) + '%');
+          const show = window.scrollY > 600;
+          toTop.style.opacity = show ? '1' : '0';
+          toTop.style.pointerEvents = show ? 'auto' : 'none';
+          ticking = false;
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      toTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
+
+      /* ---------------- accordions ---------------- */
+      $$('.acc-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const panel = btn.closest('article').querySelector('.acc');
+          const open = !panel.classList.contains('open');
+          panel.classList.toggle('open', open);
+          btn.setAttribute('aria-expanded', String(open));
+          const label = btn.querySelector('.acc-label');
+          if (label) label.textContent = open ? 'Свернуть подробности' : 'Показать обязанности и процессы';
+        });
+      });
+
+      /* ---------------- filters ---------------- */
+      const paintFilter = (btn, on) => {
+        const a = getComputedStyle(btn).getPropertyValue('--accent').trim() || 'var(--color-brand)';
+        btn.style.borderColor = on ? a : '';
+        btn.style.color = on ? a : '';
+        btn.style.background = on ? `color-mix(in oklab, ${a} 12%, transparent)` : '';
+        btn.setAttribute('aria-pressed', String(on));
+      };
+      const skillBtns = $$('.skill-filter');
+      skillBtns.forEach((b) => paintFilter(b, b.dataset.group === 'all'));
+      skillBtns.forEach((btn) => btn.addEventListener('click', () => {
+        skillBtns.forEach((b) => paintFilter(b, b === btn));
+        const g = btn.dataset.group;
+        $$('.skill-item').forEach((it) => {
+          const show = g === 'all' || it.dataset.group === g;
+          it.style.display = show ? '' : 'none';
+          if (show) it.classList.add('in');
+        });
+      }));
+
+      const stackBtns = $$('.stack-filter');
+      stackBtns.forEach((b) => paintFilter(b, b.dataset.cat === 'all'));
+      stackBtns.forEach((btn) => btn.addEventListener('click', () => {
+        stackBtns.forEach((b) => paintFilter(b, b === btn));
+        const c = btn.dataset.cat;
+        $$('.stack-item').forEach((it) => {
+          const show = c === 'all' || it.dataset.cat === c;
+          it.style.display = show ? '' : 'none';
+          if (show) it.classList.add('in');
+        });
+      }));
+
+      /* ---------------- print ---------------- */
+      $('#print-cv')?.addEventListener('click', () => {
+        $$('.acc').forEach((a) => a.classList.add('open'));
+        window.print();
+      });
+
+      /* ================= RUN CONSOLE ================= */
+      const consoleRoot = $('#run-console');
+      if (consoleRoot) {
+        const els = {
+          suite: $('#c-suite'), suiteNote: $('#c-suite-note'),
+          speed: $('#c-speed'), speedOut: $('#c-speed-out'),
+          workersOut: $('#c-workers-out'), retriesOut: $('#c-retries-out'),
+          failfast: $('#c-failfast'), flaky: $('#c-flaky'),
+          run: $('#c-run'), stop: $('#c-stop'), reset: $('#c-reset'), seed: $('#c-seed'), seedOut: $('#c-seed-out'),
+          verdict: $('#c-verdict'), elapsed: $('#c-elapsed'), done: $('#c-done'), total: $('#c-total'),
+          progress: $('#c-progress'), list: $('#c-list'), log: $('#c-log'),
+          search: $('#c-search'), sort: $('#c-sort'),
+          copy: $('#c-copy'), export: $('#c-export'),
+        };
+        const COLORS = { pass: 'var(--color-pass)', fail: 'var(--color-fail)', flaky: 'var(--color-flaky)', skip: 'var(--color-skip)', pending: '#5b6b8c' };
+        const LABELS = { pass: 'PASS', fail: 'FAIL', flaky: 'FLAKY', skip: 'SKIP', pending: 'QUEUE' };
+        const RANK = { fail: 0, flaky: 1, pass: 2, skip: 3, pending: 4 };
+
+        const mulberry32 = (a) => () => {
+          a |= 0; a = (a + 0x6D2B79F5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+
+        const st = {
+          seed: 20261117, rng: null, plan: [], results: new Map(), active: [], queue: [],
+          timer: null, elapsed: 0, running: false, halted: false, verdict: 'idle',
+          speed: 2, workers: 3, retries: 1, failFast: false, flaky: true,
+          statusFilter: 'all', search: '', sort: 'order',
+        };
+
+        const fmt = (ms) => {
+          const s = ms / 1000;
+          return `${String(Math.floor(s / 60)).padStart(2, '0')}:${(s % 60).toFixed(1).padStart(4, '0')}`;
+        };
+        const suiteById = (id) => suites.find((s) => s.id === id) || suites[1];
+
+        const log = (kind, text) => {
+          const line = document.createElement('div');
+          const color = COLORS[kind] || '#7f93b5';
+          line.innerHTML = `<span style="color:#4d5f80">[${fmt(st.elapsed)}]</span> <span style="color:${color};font-weight:700">${(LABELS[kind] || kind).padEnd(5, ' ')}</span> ${text}`;
+          const nearBottom = els.log.scrollHeight - els.log.scrollTop - els.log.clientHeight < 60;
+          els.log.appendChild(line);
+          while (els.log.childElementCount > 220) els.log.removeChild(els.log.firstChild);
+          if (nearBottom) els.log.scrollTop = els.log.scrollHeight;
+        };
+
+        const buildPlan = () => {
+          st.rng = mulberry32(st.seed);
+          const groups = suiteById(els.suite.value).groups;
+          st.plan = tests.filter((t) => groups.includes(t.group)).map((t, i) => ({
+            ...t, order: i, planned: Math.round(t.ms * (0.75 + st.rng() * 0.6)),
+          }));
+          st.results = new Map(st.plan.map((t) => [t.id, { status: 'pending', ms: 0, attempts: 0 }]));
+          st.queue = []; st.active = []; st.elapsed = 0; st.halted = false;
+          els.suiteNote.textContent = suiteById(els.suite.value).note;
+          els.total.textContent = String(st.plan.length);
+        };
+
+        const counts = () => {
+          const c = { pass: 0, fail: 0, flaky: 0, skip: 0, pending: 0 };
+          st.results.forEach((r) => { c[r.status]++; });
+          return c;
+        };
+
+        const renderDonut = (c) => {
+          const total = st.plan.length || 1;
+          const C = 2 * Math.PI * 46;
+          let offset = 0;
+          ['pass', 'flaky', 'fail', 'skip'].forEach((k) => {
+            const el = consoleRoot.querySelector(`[data-arc="${k}"]`);
+            const len = (c[k] / total) * C;
+            el.setAttribute('stroke-dasharray', `${len} ${C - len}`);
+            el.setAttribute('stroke-dashoffset', String(-offset));
+            offset += len;
+          });
+        };
+
+        const renderList = () => {
+          const q = st.search.trim().toLowerCase();
+          let rows = st.plan.map((t) => ({ t, r: st.results.get(t.id) }));
+          if (st.statusFilter !== 'all') rows = rows.filter((x) => x.r.status === st.statusFilter);
+          if (q) rows = rows.filter((x) => (x.t.name + ' ' + x.t.group).toLowerCase().includes(q));
+          if (st.sort === 'status') rows.sort((a, b) => RANK[a.r.status] - RANK[b.r.status]);
+          if (st.sort === 'duration') rows.sort((a, b) => (b.r.ms || b.t.planned) - (a.r.ms || a.t.planned));
+          if (st.sort === 'name') rows.sort((a, b) => a.t.name.localeCompare(b.t.name, 'ru'));
+          if (st.sort === 'order') rows.sort((a, b) => a.t.order - b.t.order);
+
+          const runningIds = new Set(st.active.map((a) => a.id));
+          els.list.innerHTML = rows.length ? rows.map(({ t, r }) => {
+            const c = COLORS[r.status];
+            const spin = runningIds.has(t.id);
+            return `<div class="flex items-center gap-3 px-3 py-2 rounded-lg border border-paperedge dark:border-edge ${spin ? 'row-run' : ''}">
+              <span class="w-2 h-2 rounded-full shrink-0" style="background:${c};box-shadow:0 0 8px ${c}"></span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-[12px] font-semibold truncate text-graphite dark:text-slate-200">${t.name}</span>
+                <span class="font-mono text-[10px] text-slate-500">${t.group} · ${t.id}${r.attempts > 1 ? ` · попытка ${r.attempts}` : ''}</span>
+              </span>
+              <span class="font-mono text-[10px] text-slate-500 shrink-0">${r.ms ? r.ms + 'ms' : (spin ? '···' : '—')}</span>
+              <span class="font-mono text-[10px] font-bold shrink-0 w-12 text-right" style="color:${c}">${spin ? 'RUN' : LABELS[r.status]}</span>
+            </div>`;
+          }).join('') : `<div class="px-3 py-6 text-center font-mono text-[11px] text-slate-500">Ничего не найдено под текущий фильтр</div>`;
+        };
+
+        const renderSummary = () => {
+          const c = counts();
+          Object.keys(c).forEach((k) => {
+            const el = consoleRoot.querySelector(`[data-count="${k}"]`);
+            if (el) el.textContent = String(c[k]);
+          });
+          const done = st.plan.length - c.pending;
+          els.done.textContent = String(done);
+          els.progress.style.width = (st.plan.length ? (done / st.plan.length) * 100 : 0) + '%';
+          els.elapsed.textContent = fmt(st.elapsed);
+          renderDonut(c);
+        };
+
+        const setVerdict = (kind) => {
+          st.verdict = kind;
+          const map = {
+            idle: ['IDLE · ожидает запуска', '#5b6b8c'],
+            running: ['RUNNING · прогон идёт', 'var(--color-cyan)'],
+            passed: ['BUILD PASSED · все проверки зелёные', 'var(--color-pass)'],
+            flaky: ['PASSED WITH FLAKY · есть нестабильные', 'var(--color-flaky)'],
+            failed: ['BUILD FAILED · есть падения', 'var(--color-fail)'],
+            stopped: ['STOPPED · прогон остановлен', 'var(--color-skip)'],
+          };
+          const [text, color] = map[kind];
+          els.verdict.innerHTML = `<span class="w-2 h-2 rounded-full bg-current"></span> ${text}`;
+          els.verdict.style.color = color;
+          els.verdict.style.borderColor = `color-mix(in oklab, ${color} 45%, transparent)`;
+        };
+
+        const render = () => { renderSummary(); renderList(); };
+
+        const finish = (kind) => {
+          clearInterval(st.timer); st.timer = null; st.running = false;
+          els.run.disabled = false; els.stop.disabled = true;
+          els.run.style.opacity = '1';
+          setVerdict(kind);
+          const c = counts();
+          log(kind === 'failed' ? 'fail' : kind === 'stopped' ? 'skip' : c.flaky ? 'flaky' : 'pass',
+            `Итог: pass ${c.pass} · flaky ${c.flaky} · fail ${c.fail} · skip ${c.skip} · время ${fmt(st.elapsed)}`);
+          render();
+        };
+
+        const resolve = (item) => {
+          const t = st.plan.find((x) => x.id === item.id);
+          const res = st.results.get(item.id);
+          const risk = t.risk * (st.flaky ? 1 : 0.25);
+          const failed = st.rng() < risk;
+          if (failed && item.attempt <= st.retries) {
+            res.attempts = item.attempt;
+            log('flaky', `${t.name} — падение, ретрай ${item.attempt}/${st.retries}`);
+            st.active.push({ id: item.id, remaining: Math.round(t.planned * 0.85), attempt: item.attempt + 1 });
+            return;
+          }
+          let status;
+          if (!failed) status = item.attempt > 1 ? 'flaky' : 'pass';
+          else status = 'fail';
+          st.results.set(item.id, { status, ms: t.planned, attempts: item.attempt });
+          log(status, `${t.group} · ${t.name} (${t.planned}ms)`);
+          if (status === 'fail' && st.failFast && !st.halted) {
+            st.halted = true;
+            const rest = [...st.queue, ...st.active.filter((a) => a.id !== item.id).map((a) => a.id)];
+            rest.forEach((id) => st.results.set(id, { status: 'skip', ms: 0, attempts: 0 }));
+            st.queue = []; st.active = [];
+            log('skip', `Fail-fast: остановлено, пропущено ${rest.length} проверок`);
+          }
+        };
+
+        const tick = () => {
+          const dt = 100 * st.speed;
+          st.elapsed += dt;
+          while (!st.halted && st.active.length < st.workers && st.queue.length) {
+            const id = st.queue.shift();
+            st.active.push({ id, remaining: st.plan.find((t) => t.id === id).planned, attempt: 1 });
+          }
+          const still = [];
+          const finished = [];
+          st.active.forEach((a) => {
+            a.remaining -= dt;
+            if (a.remaining <= 0) finished.push(a); else still.push(a);
+          });
+          st.active = still;
+          finished.forEach(resolve);
+          render();
+          if (!st.active.length && !st.queue.length) {
+            const c = counts();
+            finish(c.fail ? 'failed' : c.flaky ? 'flaky' : 'passed');
+          }
+        };
+
+        const start = () => {
+          if (st.running) return;
+          const c = counts();
+          if (!st.plan.length || c.pending === 0) buildPlan();
+          st.queue = st.plan.filter((t) => st.results.get(t.id).status === 'pending').map((t) => t.id);
+          if (!st.queue.length) return;
+          st.running = true; st.halted = false;
+          els.run.disabled = true; els.run.style.opacity = '.45'; els.stop.disabled = false;
+          setVerdict('running');
+          log('pending', `Старт: ${suiteById(els.suite.value).label} · ${st.queue.length} проверок · ${st.workers} воркеров · seed ${st.seed}`);
+          clearInterval(st.timer);
+          st.timer = setInterval(tick, 100);
+        };
+
+        const stop = () => {
+          if (!st.running) return;
+          [...st.queue, ...st.active.map((a) => a.id)].forEach((id) => st.results.set(id, { status: 'skip', ms: 0, attempts: 0 }));
+          st.queue = []; st.active = [];
+          finish('stopped');
+        };
+
+        const reset = (keepLog) => {
+          clearInterval(st.timer); st.timer = null; st.running = false;
+          els.run.disabled = false; els.run.style.opacity = '1'; els.stop.disabled = true;
+          buildPlan(); setVerdict('idle');
+          if (!keepLog) els.log.innerHTML = '';
+          log('pending', `Набор подготовлен: ${st.plan.length} проверок, seed ${st.seed}`);
+          render();
+        };
+
+        els.run.addEventListener('click', start);
+        els.stop.addEventListener('click', stop);
+        els.reset.addEventListener('click', () => reset(false));
+        els.seed.addEventListener('click', () => {
+          st.seed = Math.floor(Math.random() * 900000000) + 1000;
+          els.seedOut.textContent = String(st.seed);
+          reset(false);
+        });
+        els.suite.addEventListener('change', () => reset(false));
+        els.speed.addEventListener('input', () => {
+          st.speed = parseFloat(els.speed.value);
+          els.speedOut.textContent = st.speed.toFixed(1) + 'x';
+        });
+        const bump = (key, delta, min, max, out) => {
+          st[key] = Math.min(max, Math.max(min, st[key] + delta));
+          out.textContent = String(st[key]);
+        };
+        $('#c-workers-minus').addEventListener('click', () => bump('workers', -1, 1, 6, els.workersOut));
+        $('#c-workers-plus').addEventListener('click', () => bump('workers', 1, 1, 6, els.workersOut));
+        $('#c-retries-minus').addEventListener('click', () => bump('retries', -1, 0, 3, els.retriesOut));
+        $('#c-retries-plus').addEventListener('click', () => bump('retries', 1, 0, 3, els.retriesOut));
+        els.failfast.addEventListener('click', () => {
+          st.failFast = !st.failFast; els.failfast.setAttribute('aria-pressed', String(st.failFast));
+        });
+        els.flaky.addEventListener('click', () => {
+          st.flaky = !st.flaky; els.flaky.setAttribute('aria-pressed', String(st.flaky));
+        });
+        els.search.addEventListener('input', () => { st.search = els.search.value; renderList(); });
+        els.sort.addEventListener('change', () => { st.sort = els.sort.value; renderList(); });
+
+        const sBtns = $$('.c-sfilter');
+        const paintS = (b, on) => {
+          const key = b.dataset.status;
+          const col = key === 'all' ? 'var(--color-brand)' : COLORS[key];
+          b.style.borderColor = on ? col : '';
+          b.style.color = on ? col : '';
+          b.style.background = on ? `color-mix(in oklab, ${col} 14%, transparent)` : '';
+          b.setAttribute('aria-pressed', String(on));
+        };
+        sBtns.forEach((b) => paintS(b, b.dataset.status === 'all'));
+        sBtns.forEach((b) => b.addEventListener('click', () => {
+          sBtns.forEach((x) => paintS(x, x === b));
+          st.statusFilter = b.dataset.status; renderList();
+        }));
+
+        const report = () => ({
+          tool: 'illuminaty.qa · regression stand',
+          generatedAt: new Date().toISOString(),
+          suite: suiteById(els.suite.value).label,
+          seed: st.seed,
+          config: { workers: st.workers, retries: st.retries, failFast: st.failFast, instability: st.flaky, speed: st.speed },
+          durationMs: Math.round(st.elapsed),
+          summary: counts(),
+          verdict: st.verdict,
+          cases: st.plan.map((t) => ({ id: t.id, name: t.name, group: t.group, ...st.results.get(t.id) })),
+        });
+
+        els.export.addEventListener('click', () => {
+          const blob = new Blob([JSON.stringify(report(), null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = `qa-run-report-${st.seed}.json`;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          log('pass', 'Отчёт выгружен: qa-run-report-' + st.seed + '.json');
+        });
+
+        els.copy.addEventListener('click', async () => {
+          const r = report();
+          const text = `${r.suite} · seed ${r.seed}\nverdict: ${r.verdict}\nвремя: ${fmt(r.durationMs)}\npass ${r.summary.pass} / flaky ${r.summary.flaky} / fail ${r.summary.fail} / skip ${r.summary.skip}`;
+          try {
+            await navigator.clipboard.writeText(text);
+            els.copy.innerHTML = 'скопировано';
+          } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = text; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); els.copy.innerHTML = 'скопировано'; } catch (_) { els.copy.innerHTML = 'не вышло'; }
+            ta.remove();
+          }
+          setTimeout(() => { els.copy.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> сводка'; }, 1600);
+        });
+
+        window.addEventListener('beforeunload', () => clearInterval(st.timer));
+        els.seedOut.textContent = String(st.seed);
+        reset(false);
+      }
+    </script>
+  </body>
 </html>
