@@ -3,15 +3,15 @@ import '../styles/global.css';
 import {
   Send, Mail, Sun, Moon, Github, ChevronDown, Menu, X, MapPin, Globe, Database, Server,
   Terminal, Bug, Smartphone, Apple, GitBranch, Activity, Layers, Code2, Play, Square,
-  CheckCircle2, XCircle, AlertTriangle, Clock, ExternalLink, FileText, Sparkles, Bot,
-  Eye, Network, Boxes, Rocket, Figma, Users, GraduationCap, Briefcase, ArrowUpRight,
-  Filter, Search, RotateCcw, Container, Braces, FlaskConical, ListChecks, Workflow,
-  BarChart3, Download, Copy, Shuffle, Languages, PhoneCall, Radio, Printer, ArrowUp,
-  Target, Shield, Zap,
+  Clock, ExternalLink, FileText, Sparkles, Bot, Eye, Network, Boxes, Rocket, Figma,
+  Users, GraduationCap, Briefcase, ArrowUpRight, RotateCcw, Container, Braces,
+  FlaskConical, ListChecks, Workflow, BarChart3, Download, Copy, Shuffle, Languages,
+  PhoneCall, Radio, Printer, ArrowUp, Target, Shield, Search, Monitor, Chrome,
+  Compass, Flame, Tablet, Laptop,
 } from 'lucide-astro';
 import {
-  profile, ticker, metrics, skills, skillGroups, levelLegend,
-  jobs, earlyCareer, stack, projects, tests, suites,
+  profile, ticker, metrics, skills, skillGroups, levelLegend, browsers, stateMeta,
+  envMatrix, coverageNote, jobs, earlyCareer, stack, projects,
 } from '../data/cv';
 
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${p}`;
@@ -20,7 +20,7 @@ const icons: Record<string, any> = {
   Send, Mail, Github, Database, Server, Terminal, Bug, Smartphone, Apple, GitBranch,
   Activity, Layers, Code2, Play, FlaskConical, BarChart3, Container, Boxes, Braces,
   ListChecks, Workflow, Figma, Users, FileText, Sparkles, Bot, Network, Globe,
-  PhoneCall, Radio, Rocket, Eye,
+  PhoneCall, Radio, Rocket, Eye, Monitor, Chrome, Compass, Flame, Tablet, Laptop,
 };
 
 const navLinks = [
@@ -34,22 +34,23 @@ const navLinks = [
   { href: '#contacts', label: 'Контакты' },
 ];
 
-const sectionMeta = [
-  { id: 'results', n: '01', title: 'Результаты в цифрах', sub: 'Только то, что могу подтвердить и объяснить на собеседовании', accent: 'var(--color-brand)' },
-  { id: 'experience', n: '02', title: 'Опыт работы', sub: 'Продукты, зона ответственности, результаты и процессы', accent: 'var(--color-pass)' },
-  { id: 'skills', n: '03', title: 'Навыки и уровень владения', sub: 'Шкала по частоте реального применения, а не по абстрактным процентам', accent: 'var(--color-flaky)' },
-  { id: 'console', n: '04', title: 'Стенд регрессионного прогона', sub: 'Интерактивная демонстрация того, как я мыслю прогон, ретраи и отчётность', accent: 'var(--color-cyan)' },
-  { id: 'stack', n: '05', title: 'Технический стек', sub: 'Инструменты по областям применения', accent: 'var(--color-skip)' },
-  { id: 'projects', n: '06', title: 'Проекты', sub: 'Автоматизация, этот сайт и продукт в разработке', accent: 'var(--color-magenta)' },
-];
-
 const statusMeta: Record<string, { label: string; color: string }> = {
   pass: { label: 'PASS', color: 'var(--color-pass)' },
   fail: { label: 'FAIL', color: 'var(--color-fail)' },
   flaky: { label: 'FLAKY', color: 'var(--color-flaky)' },
   skip: { label: 'SKIP', color: 'var(--color-skip)' },
-  pending: { label: 'QUEUE', color: '#5b6b8c' },
+  pending: { label: 'QUEUE', color: '#6b7c9e' },
 };
+
+const defEnv = envMatrix[1];
+const defBrowser = browsers[1];
+const defCell = defEnv.cells[defBrowser.id];
+
+const photoSpecs = [
+  { label: 'РЕГРЕСС', value: '−50%', color: 'var(--color-pass)' },
+  { label: 'КОМАНДА', value: '1 : 4', color: 'var(--color-flaky)' },
+  { label: 'ОПЫТ', value: '4.5 года', color: 'var(--color-brand)' },
+];
 ---
 
 <!doctype html>
@@ -57,10 +58,10 @@ const statusMeta: Record<string, { label: string; color: string }> = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Данил Степанюк — QA Engineer Middle+. Web, iOS, Android, Backend. Интеграции, микросервисы, автоматизация на pytest и Playwright." />
+    <meta name="description" content="Данил Степанюк — QA Engineer Middle+. Web, iOS, Android, macOS, Backend. Интеграции, микросервисы, кросс-браузерное тестирование, автоматизация на pytest и Playwright." />
     <meta name="theme-color" content="#04060d" />
     <meta property="og:title" content="Данил Степанюк · QA Engineer" />
-    <meta property="og:description" content="Портфолио инженера по тестированию: опыт, результаты, интерактивный стенд прогона." />
+    <meta property="og:description" content="Портфолио инженера по тестированию: опыт, результаты, матрица окружений, интерактивный стенд прогона." />
     <meta property="og:type" content="website" />
     <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -89,9 +90,9 @@ const statusMeta: Record<string, { label: string; color: string }> = {
     <!-- ================= HEADER ================= -->
     <header class="fixed top-0 inset-x-0 z-50 border-b border-paperedge dark:border-edge bg-paper/85 dark:bg-void/80 backdrop-blur-xl">
       <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        <a href="#about" class="flex items-center gap-2.5 shrink-0 group" aria-label="В начало">
+        <a href="#about" class="flex items-center gap-2.5 shrink-0" aria-label="В начало">
           <span class="relative grid place-items-center w-9 h-9 rounded-xl bg-graphite dark:bg-panel2 border border-paperedge dark:border-edge">
-            <Eye class="w-4.5 h-4.5 text-brand" style="width:18px;height:18px" />
+            <Eye class="text-brand" style="width:18px;height:18px" />
             <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-pass border-2 border-paper dark:border-void"></span>
           </span>
           <span class="font-extrabold tracking-tight text-graphite dark:text-white">
@@ -122,7 +123,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
           </button>
         </div>
       </div>
-      <div class="h-0.5 bg-transparent"><div class="progress-line h-full bg-gradient-to-r from-brand via-cyan to-pass"></div></div>
+      <div class="h-0.5"><div class="progress-line h-full bg-gradient-to-r from-brand via-cyan to-pass"></div></div>
 
       <div id="drawer" class="drawer lg:hidden absolute inset-x-0 top-full border-b border-paperedge dark:border-edge bg-paper/97 dark:bg-void/97 backdrop-blur-xl">
         <nav class="max-w-6xl mx-auto px-4 py-4 grid grid-cols-2 gap-2" aria-label="Мобильная навигация">
@@ -137,7 +138,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
 
       <!-- ================= HERO ================= -->
       <section id="about" class="pt-8 pb-14">
-        <div class="grid lg:grid-cols-[1.35fr_1fr] gap-12 items-center">
+        <div class="grid lg:grid-cols-[1.35fr_1fr] gap-12 lg:gap-14 items-center">
           <div class="reveal">
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-pass/40 bg-pass/10 mb-6">
               <span class="led"></span>
@@ -171,7 +172,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
               </button>
             </div>
 
-            <div class="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-slate-500 dark:text-slate-500">
+            <div class="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-slate-500">
               <span class="inline-flex items-center gap-1.5"><MapPin style="width:14px;height:14px" /> {profile.location}</span>
               <span class="inline-flex items-center gap-1.5"><Globe style="width:14px;height:14px" /> {profile.format}</span>
               <span class="inline-flex items-center gap-1.5"><Languages style="width:14px;height:14px" /> {profile.english}</span>
@@ -180,40 +181,49 @@ const statusMeta: Record<string, { label: string; color: string }> = {
 
           <!-- PHOTO -->
           <div class="reveal flex justify-center lg:justify-end">
-            <div class="photo-wrap relative w-[270px] h-[330px] sm:w-[310px] sm:h-[380px]" id="photo">
-              <div class="photo-ring" aria-hidden="true"></div>
-              <div class="orbit" aria-hidden="true"><span></span></div>
-              <div class="photo-tilt relative w-full h-full">
-                <div class="photo-frame w-full h-full">
-                  <img src={asset('avatar.jpg')} alt="Данил Степанюк, QA Engineer" width="310" height="380" />
-                  <div class="photo-sweep" aria-hidden="true"></div>
-                  <span class="bracket tl"></span><span class="bracket tr"></span>
-                  <span class="bracket bl"></span><span class="bracket br"></span>
-                  <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-void/90 to-transparent">
-                    <div class="font-mono text-[10px] tracking-widest text-pass">IDENTITY VERIFIED</div>
-                    <div class="font-mono text-[10px] text-slate-400">qa-engineer · middle+</div>
+            <div class="w-[280px] sm:w-[320px]">
+              <div class="photo-wrap relative w-full aspect-[4/5]" id="photo">
+                <div class="photo-ring" aria-hidden="true"></div>
+                <div class="orbit" aria-hidden="true"><span></span></div>
+
+                <div class="photo-tilt relative w-full h-full">
+                  <div class="photo-frame w-full h-full">
+                    <img src={asset('avatar.jpg')} alt="Данил Степанюк, QA Engineer" width="320" height="400" />
+                    <div class="photo-sweep" aria-hidden="true"></div>
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-void/92 via-void/50 to-transparent">
+                      <div class="flex items-center gap-2">
+                        <span class="led"></span>
+                        <span class="font-mono text-[10px] tracking-[.18em] text-pass">QA ENGINEER</span>
+                      </div>
+                      <div class="font-mono text-[10px] text-slate-400 mt-0.5">middle+ · web · mobile · backend</div>
+                    </div>
                   </div>
                 </div>
+
+                <span class="hud-badge hud-tl text-pass">
+                  <Shield style="width:12px;height:12px" /> 4.5 ГОДА В QA
+                </span>
+                <span class="hud-badge hud-br text-cyan">
+                  <Monitor style="width:12px;height:12px" /> 5 ОС · 4 БРАУЗЕРА
+                </span>
               </div>
-              <div class="float-chip absolute -left-5 top-10 panel px-3 py-2 shadow-xl">
-                <div class="font-mono text-[10px] text-slate-500">REGRESSION</div>
-                <div class="font-bold text-sm text-pass">−50% времени</div>
-              </div>
-              <div class="float-chip b absolute -right-4 top-1/3 panel px-3 py-2 shadow-xl">
-                <div class="font-mono text-[10px] text-slate-500">PLATFORMS</div>
-                <div class="font-bold text-sm text-cyan">Web · iOS · Android</div>
-              </div>
-              <div class="float-chip c absolute -left-3 bottom-8 panel px-3 py-2 shadow-xl">
-                <div class="font-mono text-[10px] text-slate-500">ROLE</div>
-                <div class="font-bold text-sm text-flaky">Sole QA in team</div>
+
+              <div class="mt-7 grid grid-cols-3 gap-2">
+                {photoSpecs.map((s) => (
+                  <div class="spec-card">
+                    <div class="font-mono text-[9px] tracking-[.12em] text-slate-500">{s.label}</div>
+                    <div class="font-extrabold text-[13px] mt-0.5" style={`color:${s.color}`}>{s.value}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TICKER -->
         <div class="ticker mt-14 py-3 border-y border-paperedge dark:border-edge">
-          <div class="ticker-track font-mono text-[11px] uppercase tracking-widest text-slate-500 dark:text-slate-500">
+          <div class="ticker-track font-mono text-[11px] uppercase tracking-widest text-slate-500">
             {[...ticker, ...ticker].map((t) => (
               <span class="inline-flex items-center gap-2 whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-pass"></span>{t}</span>
             ))}
@@ -242,25 +252,24 @@ const statusMeta: Record<string, { label: string; color: string }> = {
                 {m.delta && <span class="font-mono text-[10px] px-2 py-1 rounded-md bg-pass/12 text-pass border border-pass/30">{m.delta}</span>}
               </div>
               <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100 mb-2">{m.label}</h3>
-              <p class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-500 flex-1">{m.note}</p>
-              <div class="mt-4 h-8 flex items-end gap-1" aria-hidden="true">
+              <p class="text-[11px] leading-relaxed text-slate-500 flex-1">{m.note}</p>
+              <div class="mt-4 min-h-8 flex items-end gap-1" aria-hidden="true">
                 {m.viz === 'spark' && m.series?.map((v, k) => (
                   <span class="flex-1 rounded-sm" style={`height:${20 + (v / Math.max(...m.series!)) * 80}%; background:${m.accent}; opacity:${0.25 + (k / m.series!.length) * 0.75}`}></span>
                 ))}
                 {m.viz === 'bars' && m.series?.map((v, k) => (
                   <span class="flex-1 rounded-sm" style={`height:${(v / Math.max(...m.series!)) * 100}%; background:${m.accent}; opacity:${0.3 + (k / m.series!.length) * 0.7}`}></span>
                 ))}
-                {m.viz === 'ring' && (
-                  <div class="flex gap-1.5 w-full">
-                    {['Web', 'iOS', 'Android'].map((p) => (
-                      <span class="flex-1 text-center font-mono text-[9px] py-1 rounded-md border" style={`border-color:${m.accent}; color:${m.accent}`}>{p}</span>
+                {m.viz === 'tags' && (
+                  <div class="flex flex-wrap gap-1 w-full">
+                    {m.tags?.map((t) => (
+                      <span class="font-mono text-[9px] px-1.5 py-1 rounded-md border" style={`border-color:color-mix(in oklab, ${m.accent} 45%, transparent); color:${m.accent}`}>{t}</span>
                     ))}
                   </div>
                 )}
                 {m.viz === 'split' && (
-                  <div class="w-full h-2 rounded-full overflow-hidden flex">
+                  <div class="w-full h-2.5 rounded-full overflow-hidden flex track">
                     <span class="h-full" style={`width:50%; background:${m.accent}`}></span>
-                    <span class="h-full flex-1" style={`background:color-mix(in oklab, ${m.accent} 25%, transparent)`}></span>
                   </div>
                 )}
               </div>
@@ -399,7 +408,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
             const g = skillGroups.find((x) => x.id === s.group)!;
             return (
               <article class="skill-item reveal panel glow-card p-4" data-group={s.group} style={`--accent:${g.accent}`}>
-                <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="flex items-start justify-between gap-3 mb-2.5">
                   <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100">{s.name}</h3>
                   <span class="font-mono text-[11px] shrink-0 px-2 py-0.5 rounded-md border" style={`color:${g.accent}; border-color:color-mix(in oklab, ${g.accent} 40%, transparent)`}>{s.level}/5</span>
                 </div>
@@ -410,6 +419,97 @@ const statusMeta: Record<string, { label: string; color: string }> = {
               </article>
             );
           })}
+        </div>
+
+        <!-- COVERAGE MATRIX -->
+        <div class="reveal mt-10">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="font-mono text-xs text-cyan pt-1.5">03.1</span>
+            <div>
+              <h3 class="text-xl font-extrabold text-graphite dark:text-white">Матрица окружений</h3>
+              <p class="text-[13px] text-slate-500 mt-0.5">Где и в чём я реально проверяю продукт. Нажми на ячейку, чтобы увидеть, что именно там тестируется.</p>
+            </div>
+          </div>
+
+          <div class="panel glow-card p-5 sm:p-6" style="--accent: var(--color-cyan)">
+            <div class="flex flex-wrap gap-4 mb-5">
+              {Object.entries(stateMeta).map(([k, v]) => (
+                <span class="inline-flex items-center gap-2 font-mono text-[11px]" style={`color:${v.color}`}>
+                  <span class="grid place-items-center w-6 h-6 rounded-md border text-[13px] font-bold" style={`border-color:color-mix(in oklab, ${v.color} 40%, transparent)`}>{v.glyph}</span>
+                  {v.label}
+                </span>
+              ))}
+            </div>
+
+            <div class="overflow-x-auto -mx-1 px-1">
+              <table class="w-full min-w-[640px] border-separate" style="border-spacing:6px" id="matrix">
+                <thead>
+                  <tr>
+                    <th class="text-left font-mono text-[10px] uppercase tracking-widest text-slate-500 pb-1 pl-1 w-[190px]">Окружение</th>
+                    {browsers.map((b) => {
+                      const BIcon = icons[b.icon];
+                      return (
+                        <th class="mx-head font-semibold text-[11.5px] text-slate-500 pb-1 transition-colors" data-col={b.id}>
+                          <span class="inline-flex flex-col items-center gap-1">
+                            <BIcon style="width:16px;height:16px" />
+                            {b.name}
+                          </span>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {envMatrix.map((row) => {
+                    const RIcon = icons[row.icon];
+                    return (
+                      <tr>
+                        <th scope="row" class="mx-head text-left align-middle" data-row={row.id}>
+                          <span class="flex items-center gap-2.5 pl-1">
+                            <span class="grid place-items-center w-8 h-8 rounded-lg border border-paperedge dark:border-edge shrink-0"><RIcon style="width:15px;height:15px" /></span>
+                            <span>
+                              <span class="block font-bold text-[12.5px] text-graphite dark:text-slate-200">{row.name}</span>
+                              <span class="block font-mono text-[9.5px] text-slate-500">{row.sub}</span>
+                            </span>
+                          </span>
+                        </th>
+                        {browsers.map((b) => {
+                          const cell = row.cells[b.id];
+                          const meta = stateMeta[cell.s];
+                          const selected = row.id === defEnv.id && b.id === defBrowser.id;
+                          return (
+                            <td>
+                              <button type="button"
+                                class={`mx-cell ${selected ? 'sel' : ''}`}
+                                data-row={row.id} data-col={b.id}
+                                data-envname={row.name} data-browsername={b.name}
+                                data-state={meta.label} data-color={meta.color} data-note={cell.n}
+                                style={`color:${meta.color}; background:color-mix(in oklab, ${meta.color} ${cell.s === 'na' ? 4 : 10}%, transparent)`}
+                                aria-label={`${row.name} · ${b.name}: ${meta.label}`}>
+                                {meta.glyph}
+                              </button>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-5 rounded-xl border border-paperedge dark:border-edge p-4 bg-paper2/50 dark:bg-panel2/40" id="mx-readout" aria-live="polite">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span id="mx-env" class="font-bold text-[13px] text-graphite dark:text-white">{defEnv.name}</span>
+                <span class="text-slate-500 text-[13px]">·</span>
+                <span id="mx-browser" class="font-bold text-[13px] text-graphite dark:text-white">{defBrowser.name}</span>
+                <span id="mx-state" class="font-mono text-[10px] px-2 py-1 rounded-md border ml-auto" style={`color:${stateMeta[defCell.s].color}; border-color:color-mix(in oklab, ${stateMeta[defCell.s].color} 40%, transparent)`}>{stateMeta[defCell.s].label}</span>
+              </div>
+              <p id="mx-note" class="text-[12.5px] leading-relaxed text-slate-600 dark:text-slate-400">{defCell.n}</p>
+            </div>
+
+            <p class="mt-4 text-[12px] leading-relaxed text-slate-500 border-l-2 border-cyan pl-3">{coverageNote}</p>
+          </div>
         </div>
       </section>
 
@@ -427,13 +527,16 @@ const statusMeta: Record<string, { label: string; color: string }> = {
         </p>
 
         <div class="reveal panel overflow-hidden" id="run-console">
-          <!-- toolbar -->
           <div class="p-5 border-b border-paperedge dark:border-edge grid gap-5 lg:grid-cols-[1.1fr_1fr]">
             <div class="grid sm:grid-cols-2 gap-4">
               <label class="block">
                 <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Набор</span>
                 <select id="c-suite" class="mt-1.5 w-full h-10 px-3 rounded-xl border border-paperedge dark:border-edge bg-paper2 dark:bg-panel2 text-[13px] font-semibold">
-                  {suites.map((s) => <option value={s.id} selected={s.id === 'regression'}>{s.label}</option>)}
+                  <option value="smoke">Smoke</option>
+                  <option value="regression" selected>Полный регресс</option>
+                  <option value="api">API и данные</option>
+                  <option value="realtime">Realtime и звонки</option>
+                  <option value="mobile">Платформы и браузеры</option>
                 </select>
                 <span id="c-suite-note" class="block mt-1 text-[10.5px] text-slate-500"></span>
               </label>
@@ -492,17 +595,16 @@ const statusMeta: Record<string, { label: string; color: string }> = {
             </div>
           </div>
 
-          <!-- summary -->
           <div class="p-5 grid lg:grid-cols-[1fr_auto] gap-6 items-center border-b border-paperedge dark:border-edge">
             <div>
               <div class="flex flex-wrap items-center gap-3 mb-3">
-                <span id="c-verdict" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[11px] font-bold border" style="color:#5b6b8c;border-color:#5b6b8c55">
+                <span id="c-verdict" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[11px] font-bold border" style="color:#6b7c9e;border-color:#6b7c9e55">
                   <span class="w-2 h-2 rounded-full bg-current"></span> IDLE · ожидает запуска
                 </span>
                 <span class="font-mono text-[11px] text-slate-500 inline-flex items-center gap-1.5"><Clock style="width:13px;height:13px" /><span id="c-elapsed">00:00.0</span></span>
                 <span class="font-mono text-[11px] text-slate-500">выполнено <span id="c-done">0</span>/<span id="c-total">0</span></span>
               </div>
-              <div class="h-2.5 rounded-full bg-paperedge dark:bg-panel2 overflow-hidden">
+              <div class="h-2.5 rounded-full overflow-hidden track">
                 <div id="c-progress" class="h-full rounded-full transition-[width] duration-300" style="width:0%;background:linear-gradient(90deg,var(--color-brand),var(--color-cyan),var(--color-pass))"></div>
               </div>
               <div class="flex flex-wrap gap-2 mt-4" id="c-counts" aria-live="polite">
@@ -517,9 +619,9 @@ const statusMeta: Record<string, { label: string; color: string }> = {
 
             <div class="flex items-center gap-5 justify-center">
               <svg viewBox="0 0 120 120" class="donut w-[124px] h-[124px] -rotate-90" role="img" aria-label="Распределение результатов прогона">
-                <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" class="text-paperedge dark:text-panel2" stroke-width="14"></circle>
+                <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" class="donut-track" stroke-width="14"></circle>
                 <circle data-arc="pass" cx="60" cy="60" r="46" fill="none" stroke="var(--color-pass)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
-                <circle data-arc="flaky" cx="60" cy="60" r="46" fill="none" stroke="var(--color-flaky)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="butt"></circle>
+                <circle data-arc="flaky" cx="60" cy="60" r="46" fill="none" stroke="var(--color-flaky)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
                 <circle data-arc="fail" cx="60" cy="60" r="46" fill="none" stroke="var(--color-fail)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
                 <circle data-arc="skip" cx="60" cy="60" r="46" fill="none" stroke="var(--color-skip)" stroke-width="14" stroke-dasharray="0 289" stroke-dashoffset="0"></circle>
               </svg>
@@ -533,7 +635,6 @@ const statusMeta: Record<string, { label: string; color: string }> = {
             </div>
           </div>
 
-          <!-- filters + list + log -->
           <div class="grid lg:grid-cols-[1.15fr_1fr]">
             <div class="p-5 border-b lg:border-b-0 lg:border-r border-paperedge dark:border-edge">
               <div class="flex flex-wrap gap-2 mb-3">
@@ -597,7 +698,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
           {stack.map((cat) => {
             const CatIcon = icons[cat.icon];
             return (
-              <article class="stack-item reveal panel glow-card p-5" data-cat={cat.id} style={`--accent:${cat.accent}`}>
+              <article class={`stack-item reveal panel glow-card p-5 ${cat.wide ? 'md:col-span-2 xl:col-span-3' : ''}`} data-cat={cat.id} style={`--accent:${cat.accent}`}>
                 <div class="flex items-center gap-3 mb-4">
                   <span class="grid place-items-center w-10 h-10 rounded-xl border" style={`border-color:color-mix(in oklab, ${cat.accent} 40%, transparent); background:color-mix(in oklab, ${cat.accent} 12%, transparent); color:${cat.accent}`}>
                     <CatIcon style="width:19px;height:19px" />
@@ -897,6 +998,41 @@ const statusMeta: Record<string, { label: string; color: string }> = {
         });
       }));
 
+      /* ---------------- coverage matrix ---------------- */
+      const matrix = $('#matrix');
+      if (matrix) {
+        const cells = $$('.mx-cell', matrix);
+        const heads = $$('.mx-head', matrix);
+        const out = { env: $('#mx-env'), browser: $('#mx-browser'), state: $('#mx-state'), note: $('#mx-note') };
+
+        const clearHl = () => {
+          cells.forEach((c) => c.classList.remove('hl'));
+          heads.forEach((h) => h.classList.remove('hl'));
+        };
+        const highlight = (cell) => {
+          clearHl();
+          const r = cell.dataset.row, c = cell.dataset.col;
+          cells.forEach((x) => { if (x.dataset.row === r || x.dataset.col === c) x.classList.add('hl'); });
+          heads.forEach((h) => { if (h.dataset.row === r || h.dataset.col === c) h.classList.add('hl'); });
+        };
+        const select = (cell) => {
+          cells.forEach((x) => x.classList.remove('sel'));
+          cell.classList.add('sel');
+          out.env.textContent = cell.dataset.envname;
+          out.browser.textContent = cell.dataset.browsername;
+          out.state.textContent = cell.dataset.state;
+          out.state.style.color = cell.dataset.color;
+          out.state.style.borderColor = `color-mix(in oklab, ${cell.dataset.color} 40%, transparent)`;
+          out.note.textContent = cell.dataset.note;
+        };
+        cells.forEach((cell) => {
+          cell.addEventListener('pointerenter', () => highlight(cell));
+          cell.addEventListener('focus', () => highlight(cell));
+          cell.addEventListener('click', () => select(cell));
+        });
+        matrix.addEventListener('pointerleave', clearHl);
+      }
+
       /* ---------------- print ---------------- */
       $('#print-cv')?.addEventListener('click', () => {
         $$('.acc').forEach((a) => a.classList.add('open'));
@@ -914,10 +1050,9 @@ const statusMeta: Record<string, { label: string; color: string }> = {
           run: $('#c-run'), stop: $('#c-stop'), reset: $('#c-reset'), seed: $('#c-seed'), seedOut: $('#c-seed-out'),
           verdict: $('#c-verdict'), elapsed: $('#c-elapsed'), done: $('#c-done'), total: $('#c-total'),
           progress: $('#c-progress'), list: $('#c-list'), log: $('#c-log'),
-          search: $('#c-search'), sort: $('#c-sort'),
-          copy: $('#c-copy'), export: $('#c-export'),
+          search: $('#c-search'), sort: $('#c-sort'), copy: $('#c-copy'), export: $('#c-export'),
         };
-        const COLORS = { pass: 'var(--color-pass)', fail: 'var(--color-fail)', flaky: 'var(--color-flaky)', skip: 'var(--color-skip)', pending: '#5b6b8c' };
+        const COLORS = { pass: 'var(--color-pass)', fail: 'var(--color-fail)', flaky: 'var(--color-flaky)', skip: 'var(--color-skip)', pending: '#6b7c9e' };
         const LABELS = { pass: 'PASS', fail: 'FAIL', flaky: 'FLAKY', skip: 'SKIP', pending: 'QUEUE' };
         const RANK = { fail: 0, flaky: 1, pass: 2, skip: 3, pending: 4 };
 
@@ -1024,7 +1159,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
         const setVerdict = (kind) => {
           st.verdict = kind;
           const map = {
-            idle: ['IDLE · ожидает запуска', '#5b6b8c'],
+            idle: ['IDLE · ожидает запуска', '#6b7c9e'],
             running: ['RUNNING · прогон идёт', 'var(--color-cyan)'],
             passed: ['BUILD PASSED · все проверки зелёные', 'var(--color-pass)'],
             flaky: ['PASSED WITH FLAKY · есть нестабильные', 'var(--color-flaky)'],
@@ -1041,8 +1176,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
 
         const finish = (kind) => {
           clearInterval(st.timer); st.timer = null; st.running = false;
-          els.run.disabled = false; els.stop.disabled = true;
-          els.run.style.opacity = '1';
+          els.run.disabled = false; els.run.style.opacity = '1'; els.stop.disabled = true;
           setVerdict(kind);
           const c = counts();
           log(kind === 'failed' ? 'fail' : kind === 'stopped' ? 'skip' : c.flaky ? 'flaky' : 'pass',
@@ -1052,18 +1186,15 @@ const statusMeta: Record<string, { label: string; color: string }> = {
 
         const resolve = (item) => {
           const t = st.plan.find((x) => x.id === item.id);
-          const res = st.results.get(item.id);
           const risk = t.risk * (st.flaky ? 1 : 0.25);
           const failed = st.rng() < risk;
           if (failed && item.attempt <= st.retries) {
-            res.attempts = item.attempt;
+            st.results.set(item.id, { status: 'pending', ms: 0, attempts: item.attempt });
             log('flaky', `${t.name} — падение, ретрай ${item.attempt}/${st.retries}`);
             st.active.push({ id: item.id, remaining: Math.round(t.planned * 0.85), attempt: item.attempt + 1 });
             return;
           }
-          let status;
-          if (!failed) status = item.attempt > 1 ? 'flaky' : 'pass';
-          else status = 'fail';
+          const status = !failed ? (item.attempt > 1 ? 'flaky' : 'pass') : 'fail';
           st.results.set(item.id, { status, ms: t.planned, attempts: item.attempt });
           log(status, `${t.group} · ${t.name} (${t.planned}ms)`);
           if (status === 'fail' && st.failFast && !st.halted) {
@@ -1082,8 +1213,7 @@ const statusMeta: Record<string, { label: string; color: string }> = {
             const id = st.queue.shift();
             st.active.push({ id, remaining: st.plan.find((t) => t.id === id).planned, attempt: 1 });
           }
-          const still = [];
-          const finished = [];
+          const still = [], finished = [];
           st.active.forEach((a) => {
             a.remaining -= dt;
             if (a.remaining <= 0) finished.push(a); else still.push(a);
@@ -1194,19 +1324,19 @@ const statusMeta: Record<string, { label: string; color: string }> = {
           log('pass', 'Отчёт выгружен: qa-run-report-' + st.seed + '.json');
         });
 
+        const copyDefault = els.copy.innerHTML;
         els.copy.addEventListener('click', async () => {
           const r = report();
           const text = `${r.suite} · seed ${r.seed}\nverdict: ${r.verdict}\nвремя: ${fmt(r.durationMs)}\npass ${r.summary.pass} / flaky ${r.summary.flaky} / fail ${r.summary.fail} / skip ${r.summary.skip}`;
-          try {
-            await navigator.clipboard.writeText(text);
-            els.copy.innerHTML = 'скопировано';
-          } catch (e) {
+          let ok = false;
+          try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
             const ta = document.createElement('textarea');
             ta.value = text; document.body.appendChild(ta); ta.select();
-            try { document.execCommand('copy'); els.copy.innerHTML = 'скопировано'; } catch (_) { els.copy.innerHTML = 'не вышло'; }
+            try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
             ta.remove();
           }
-          setTimeout(() => { els.copy.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> сводка'; }, 1600);
+          els.copy.textContent = ok ? 'скопировано' : 'не вышло';
+          setTimeout(() => { els.copy.innerHTML = copyDefault; }, 1600);
         });
 
         window.addEventListener('beforeunload', () => clearInterval(st.timer));
