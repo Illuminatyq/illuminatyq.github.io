@@ -357,4 +357,8 @@ export const suites = [
   { id: 'api', label: 'API и данные', groups: ['API', 'Data'], note: 'Контракты, очереди, кэш, целостность' },
   { id: 'realtime', label: 'Realtime и звонки', groups: ['Calls', 'Realtime'], note: 'Самая нестабильная зона: сеть и устройства' },
   { id: 'mobile', label: 'Платформы и браузеры', groups: ['Mobile', 'Calls'], note: 'Устройства, разрешения, WebKit, фоновые сценарии' },
+<<<<<<< HEAD
 ];
+=======
+];
+>>>>>>> 881443f (a little update)
