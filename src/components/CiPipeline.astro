@@ -1,10 +1,11 @@
 ---
-import { Shield, FlaskConical, Database, BarChart3, Play, RotateCcw, ExternalLink } from 'lucide-astro';
+import { Shield, FlaskConical, Database, BarChart3, Container, Play, RotateCcw, ExternalLink } from 'lucide-astro';
 const stages = [
   { id: 'quality', name: 'quality', icon: Shield, desc: 'ruff check + format --check, mypy strict по всем исходникам. Стиль и типы до тестов.' },
   { id: 'unit', name: 'unit', icon: FlaskConical, desc: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).' },
-  { id: 'integration', name: 'integration', icon: Database, desc: 'pytest -m alembic upgrade head против Postgres 17 service container, затем pytest -m integration: репозиторий и схема БД.' },
+  { id: 'integration', name: 'integration', icon: Database, desc: 'alembic upgrade head против Postgres 17 service container, затем pytest -m integration: репозиторий и схема БД.' },
   { id: 'reports', name: 'reports', icon: BarChart3, desc: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.' },
+  { id: 'image', name: 'image', icon: Container, desc: 'Сборка multi-stage образа (non-root), публикация в GHCR, smoke-тест контейнера по /healthz.' },
 ];
 ---
 <section id="pipeline" class="py-14" style="--accent: var(--color-cyan)">
@@ -88,6 +89,7 @@ const stages = [
     unit: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).',
     integration: 'alembic upgrade head против Postgres 17 service container, затем pytest -m integration: репозиторий и схема БД.',
     reports: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.',
+    image: 'Сборка multi-stage образа (non-root), публикация в GHCR, smoke-тест контейнера по /healthz.',
   };
   const $ = (s) => document.querySelector(s);
   const root = $('#cp-root');
@@ -134,8 +136,12 @@ const stages = [
     };
     const demo = () => ({
       demo: true, sha: 'demo000', date: 'synthetic', verdict: 'pass', verdictText: 'BUILD PASSED · demo',
-      stages: { quality: { status: 'pass', dur: '12s' }, unit: { status: 'pass', dur: '31s' }, integration: { status: 'pass', dur: '24s' }, reports: { status: 'pass', dur: '18s' } },
+      stages: { quality: { status: 'pass', dur: '12s' }, unit: { status: 'pass', dur: '31s' }, integration: { status: 'pass', dur: '24s' }, reports: { status: 'pass', dur: '18s' }, image: { status: 'pass', dur: '40s' } },
     });
+    const mk = (j) => j ? {
+      status: j.status === 'completed' ? (j.conclusion === 'success' ? 'pass' : j.conclusion === 'skipped' ? 'skip' : 'fail') : 'running',
+      dur: j.started_at && j.completed_at ? Math.round((new Date(j.completed_at) - new Date(j.started_at)) / 1000) + 's' : '—',
+    } : { status: 'pending', dur: '—' };
     const load = async () => {
       try {
         const ci = await (await fetch(`${API}/workflows/ci.yml/runs?per_page=1`)).json();
@@ -144,13 +150,15 @@ const stages = [
         const jobs = await (await fetch(`${API}/runs/${run.id}/jobs`)).json();
         const rep = await (await fetch(`${API}/workflows/report.yml/runs?per_page=1`)).json();
         const rrun = rep.workflow_runs && rep.workflow_runs[0];
+        const doc = await (await fetch(`${API}/workflows/docker.yml/runs?per_page=1`)).json();
+        const drun = doc.workflow_runs && doc.workflow_runs[0];
         const byName = {};
         (jobs.jobs || []).forEach((j) => { byName[j.name] = j; });
-        const mk = (j) => j ? {
-          status: j.status === 'completed' ? (j.conclusion === 'success' ? 'pass' : j.conclusion === 'skipped' ? 'skip' : 'fail') : 'running',
-          dur: j.started_at && j.completed_at ? Math.round((new Date(j.completed_at) - new Date(j.started_at)) / 1000) + 's' : '—',
-        } : { status: 'pending', dur: '—' };
-        const stages = { quality: mk(byName.quality), unit: mk(byName.unit), integration: mk(byName.integration), reports: mk(rrun ? { status: rrun.status, conclusion: rrun.conclusion, started_at: rrun.run_started_at, completed_at: rrun.updated_at } : null) };
+        const stages = {
+          quality: mk(byName.quality), unit: mk(byName.unit), integration: mk(byName.integration),
+          reports: mk(rrun ? { status: rrun.status, conclusion: rrun.conclusion, started_at: rrun.run_started_at, completed_at: rrun.updated_at } : null),
+          image: mk(drun ? { status: drun.status, conclusion: drun.conclusion, started_at: drun.run_started_at, completed_at: drun.updated_at } : null),
+        };
         const failed = Object.values(stages).some((s) => s.status === 'fail');
         data = {
           demo: false, sha: (run.head_sha || '').slice(0, 7), date: new Date(run.created_at).toLocaleString('ru-RU'),
