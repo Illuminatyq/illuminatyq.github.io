@@ -13,6 +13,7 @@ import {
   profile, ticker, metrics, skills, skillGroups, levelLegend, browsers, stateMeta,
   envMatrix, coverageNote, jobs, earlyCareer, stack, projects,
 } from '../data/cv';
+import CiPipeline from '../components/CiPipeline.astro';
 
 const asset = (p: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${p}`;
 
@@ -27,10 +28,11 @@ const navLinks = [
   { href: '#about', label: 'Обо мне' },
   { href: '#results', label: 'Результаты' },
   { href: '#experience', label: 'Опыт' },
-  { href: '#skills', label: 'Навыки' },
+  { href: '#projects', label: 'Проекты' },
+  { href: '#pipeline', label: 'Пайплайн' },
   { href: '#console', label: 'Стенд' },
   { href: '#stack', label: 'Стек' },
-  { href: '#projects', label: 'Проекты' },
+  { href: '#skills', label: 'Навыки' },
   { href: '#contacts', label: 'Контакты' },
 ];
 
@@ -337,7 +339,7 @@ const photoSpecs = [
 
               <div class={`acc no-print ${idx === 0 ? 'open' : ''}`}>
                 <div>
-                  <div class="px-6 sm:px-7 pb-7 pt-1 grid md:grid-cols-2 gap-6 border-t border-paperedge dark:border-edge">
+                  <div class="px-6 sm:p-7 pb-7 pt-1 grid md:grid-cols-2 gap-6 border-t border-paperedge dark:border-edge">
                     <div>
                       <h4 class="font-mono text-[11px] uppercase tracking-widest text-slate-500 mb-3 mt-4">Зона ответственности</h4>
                       <ul class="space-y-2.5">
@@ -381,137 +383,58 @@ const photoSpecs = [
         </div>
       </section>
 
-      <!-- ================= SKILLS ================= -->
-      <section id="skills" class="py-14" style="--accent: var(--color-flaky)">
-        <div class="reveal flex items-start gap-4 mb-6">
-          <span class="font-mono text-xs text-flaky pt-2">03</span>
+      <!-- ================= PROJECTS ================= -->
+      <section id="projects" class="py-14" style="--accent: var(--color-magenta)">
+        <div class="reveal flex items-start gap-4 mb-9">
+          <span class="font-mono text-xs text-magenta pt-2">03</span>
           <div class="flex-1">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Навыки и уровень владения</h2>
-            <p class="text-sm text-slate-500 mt-1">Шкала по частоте реального применения, а не по абстрактным процентам</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Проекты</h2>
+            <p class="text-sm text-slate-500 mt-1">Автоматизация, этот сайт и продукт в разработке</p>
           </div>
         </div>
 
-        <div class="reveal panel p-4 mb-5 flex flex-wrap gap-x-5 gap-y-1.5">
-          {levelLegend.map((l) => <span class="font-mono text-[11px] text-slate-500">{l}</span>)}
-        </div>
-
-        <div class="reveal flex flex-wrap gap-2 mb-6" id="skill-filters" role="group" aria-label="Фильтр навыков">
-          {skillGroups.map((g, i) => (
-            <button type="button" data-group={g.id} aria-pressed={i === 0 ? 'true' : 'false'}
-              class="skill-filter px-3.5 py-2 rounded-xl text-[12px] font-bold border transition-all"
-              style={`--accent:${g.accent}`}>{g.label}</button>
-          ))}
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-3" id="skill-list">
-          {skills.map((s) => {
-            const g = skillGroups.find((x) => x.id === s.group)!;
+        <div class="grid lg:grid-cols-3 gap-4">
+          {projects.map((p) => {
+            const PIcon = icons[p.icon];
+            const links = (p as { links?: { label: string; href: string }[] }).links ?? [];
             return (
-              <article class="skill-item reveal panel glow-card p-4" data-group={s.group} style={`--accent:${g.accent}`}>
-                <div class="flex items-start justify-between gap-3 mb-2.5">
-                  <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100">{s.name}</h3>
-                  <span class="font-mono text-[11px] shrink-0 px-2 py-0.5 rounded-md border" style={`color:${g.accent}; border-color:color-mix(in oklab, ${g.accent} 40%, transparent)`}>{s.level}/5</span>
+              <article class="reveal panel glow-card p-6 flex flex-col" style={`--accent:${p.accent}`}>
+                <div class="flex items-start justify-between mb-4">
+                  <span class="grid place-items-center w-11 h-11 rounded-xl border" style={`border-color:color-mix(in oklab, ${p.accent} 40%, transparent); background:color-mix(in oklab, ${p.accent} 12%, transparent); color:${p.accent}`}>
+                    <PIcon style="width:20px;height:20px" />
+                  </span>
+                  <span class="font-mono text-[10px] px-2 py-1 rounded-md border" style={`color:${p.accent}; border-color:color-mix(in oklab, ${p.accent} 35%, transparent)`}>{p.status}</span>
                 </div>
-                <div class="flex gap-1.5 mb-2.5" aria-hidden="true">
-                  {[1, 2, 3, 4, 5].map((n) => <span class={`seg flex-1 ${n <= s.level ? 'on' : ''}`}></span>)}
+                <h3 class="font-extrabold text-lg text-graphite dark:text-white mb-2">{p.name}</h3>
+                <p class="text-[13px] leading-relaxed text-slate-600 dark:text-slate-400 mb-4">{p.summary}</p>
+                <ul class="space-y-2 mb-5 flex-1">
+                  {p.points.map((pt) => (
+                    <li class="flex gap-2 text-[12px] leading-relaxed text-slate-500">
+                      <span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={`background:${p.accent}`}></span><span>{pt}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="flex flex-wrap gap-1.5">
+                  {p.stack.map((s) => <span class="chip font-mono" style={`--accent:${p.accent}`}>{s}</span>)}
                 </div>
-                <p class="text-[11.5px] leading-relaxed text-slate-500">{s.evidence}</p>
+                {links.length > 0 && (
+                  <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-paperedge dark:border-edge">
+                    {links.map((l) => (
+                      <a href={l.href} target={l.href.startsWith('#') ? undefined : '_blank'} rel="noopener"
+                        class="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg border border-paperedge dark:border-edge text-[11px] font-bold hover:border-brand hover:text-brand transition-colors">
+                        {l.label} <ArrowUpRight style="width:12px;height:12px" />
+                      </a>
+                    ))}
+                  </div>
+                )}
               </article>
             );
           })}
         </div>
-
-        <!-- COVERAGE MATRIX -->
-        <div class="reveal mt-10">
-          <div class="flex items-start gap-3 mb-4">
-            <span class="font-mono text-xs text-cyan pt-1.5">03.1</span>
-            <div>
-              <h3 class="text-xl font-extrabold text-graphite dark:text-white">Матрица окружений</h3>
-              <p class="text-[13px] text-slate-500 mt-0.5">Где и в чём я реально проверяю продукт. Нажми на ячейку, чтобы увидеть, что именно там тестируется.</p>
-            </div>
-          </div>
-
-          <div class="panel glow-card p-5 sm:p-6" style="--accent: var(--color-cyan)">
-            <div class="flex flex-wrap gap-4 mb-5">
-              {Object.entries(stateMeta).map(([k, v]) => (
-                <span class="inline-flex items-center gap-2 font-mono text-[11px]" style={`color:${v.color}`}>
-                  <span class="grid place-items-center w-6 h-6 rounded-md border text-[13px] font-bold" style={`border-color:color-mix(in oklab, ${v.color} 40%, transparent)`}>{v.glyph}</span>
-                  {v.label}
-                </span>
-              ))}
-            </div>
-
-            <div class="overflow-x-auto -mx-1 px-1">
-              <table class="w-full min-w-[640px] border-separate" style="border-spacing:6px" id="matrix">
-                <thead>
-                  <tr>
-                    <th class="text-left font-mono text-[10px] uppercase tracking-widest text-slate-500 pb-1 pl-1 w-[190px]">Окружение</th>
-                    {browsers.map((b) => {
-                      const BIcon = icons[b.icon];
-                      return (
-                        <th class="mx-head font-semibold text-[11.5px] text-slate-500 pb-1 transition-colors" data-col={b.id}>
-                          <span class="inline-flex flex-col items-center gap-1">
-                            <BIcon style="width:16px;height:16px" />
-                            {b.name}
-                          </span>
-                        </th>
-                      );
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {envMatrix.map((row) => {
-                    const RIcon = icons[row.icon];
-                    return (
-                      <tr>
-                        <th scope="row" class="mx-head text-left align-middle" data-row={row.id}>
-                          <span class="flex items-center gap-2.5 pl-1">
-                            <span class="grid place-items-center w-8 h-8 rounded-lg border border-paperedge dark:border-edge shrink-0"><RIcon style="width:15px;height:15px" /></span>
-                            <span>
-                              <span class="block font-bold text-[12.5px] text-graphite dark:text-slate-200">{row.name}</span>
-                              <span class="block font-mono text-[9.5px] text-slate-500">{row.sub}</span>
-                            </span>
-                          </span>
-                        </th>
-                        {browsers.map((b) => {
-                          const cell = row.cells[b.id];
-                          const meta = stateMeta[cell.s];
-                          const selected = row.id === defEnv.id && b.id === defBrowser.id;
-                          return (
-                            <td>
-                              <button type="button"
-                                class={`mx-cell ${selected ? 'sel' : ''}`}
-                                data-row={row.id} data-col={b.id}
-                                data-envname={row.name} data-browsername={b.name}
-                                data-state={meta.label} data-color={meta.color} data-note={cell.n}
-                                style={`color:${meta.color}; background:color-mix(in oklab, ${meta.color} ${cell.s === 'na' ? 4 : 10}%, transparent)`}
-                                aria-label={`${row.name} · ${b.name}: ${meta.label}`}>
-                                {meta.glyph}
-                              </button>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            <div class="mt-5 rounded-xl border border-paperedge dark:border-edge p-4 bg-paper2/50 dark:bg-panel2/40" id="mx-readout" aria-live="polite">
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                <span id="mx-env" class="font-bold text-[13px] text-graphite dark:text-white">{defEnv.name}</span>
-                <span class="text-slate-500 text-[13px]">·</span>
-                <span id="mx-browser" class="font-bold text-[13px] text-graphite dark:text-white">{defBrowser.name}</span>
-                <span id="mx-state" class="font-mono text-[10px] px-2 py-1 rounded-md border ml-auto" style={`color:${stateMeta[defCell.s].color}; border-color:color-mix(in oklab, ${stateMeta[defCell.s].color} 40%, transparent)`}>{stateMeta[defCell.s].label}</span>
-              </div>
-              <p id="mx-note" class="text-[12.5px] leading-relaxed text-slate-600 dark:text-slate-400">{defCell.n}</p>
-            </div>
-
-            <p class="mt-4 text-[12px] leading-relaxed text-slate-500 border-l-2 border-cyan pl-3">{coverageNote}</p>
-          </div>
-        </div>
       </section>
+
+      <!-- ================= CI/CD PIPELINE ================= -->
+      <CiPipeline />
 
       <!-- ================= CONSOLE ================= -->
       <section id="console" class="py-14" style="--accent: var(--color-cyan)">
@@ -722,42 +645,135 @@ const photoSpecs = [
         </div>
       </section>
 
-      <!-- ================= PROJECTS ================= -->
-      <section id="projects" class="py-14" style="--accent: var(--color-magenta)">
-        <div class="reveal flex items-start gap-4 mb-9">
-          <span class="font-mono text-xs text-magenta pt-2">06</span>
+      <!-- ================= SKILLS ================= -->
+      <section id="skills" class="py-14" style="--accent: var(--color-flaky)">
+        <div class="reveal flex items-start gap-4 mb-6">
+          <span class="font-mono text-xs text-flaky pt-2">06</span>
           <div class="flex-1">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Проекты</h2>
-            <p class="text-sm text-slate-500 mt-1">Автоматизация, этот сайт и продукт в разработке</p>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">Навыки и уровень владения</h2>
+            <p class="text-sm text-slate-500 mt-1">Шкала по частоте реального применения, а не по абстрактным процентам</p>
           </div>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-4">
-          {projects.map((p) => {
-            const PIcon = icons[p.icon];
+        <div class="reveal panel p-4 mb-5 flex flex-wrap gap-x-5 gap-y-1.5">
+          {levelLegend.map((l) => <span class="font-mono text-[11px] text-slate-500">{l}</span>)}
+        </div>
+
+        <div class="reveal flex flex-wrap gap-2 mb-6" id="skill-filters" role="group" aria-label="Фильтр навыков">
+          {skillGroups.map((g, i) => (
+            <button type="button" data-group={g.id} aria-pressed={i === 0 ? 'true' : 'false'}
+              class="skill-filter px-3.5 py-2 rounded-xl text-[12px] font-bold border transition-all"
+              style={`--accent:${g.accent}`}>{g.label}</button>
+          ))}
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-3" id="skill-list">
+          {skills.map((s) => {
+            const g = skillGroups.find((x) => x.id === s.group)!;
             return (
-              <article class="reveal panel glow-card p-6 flex flex-col" style={`--accent:${p.accent}`}>
-                <div class="flex items-start justify-between mb-4">
-                  <span class="grid place-items-center w-11 h-11 rounded-xl border" style={`border-color:color-mix(in oklab, ${p.accent} 40%, transparent); background:color-mix(in oklab, ${p.accent} 12%, transparent); color:${p.accent}`}>
-                    <PIcon style="width:20px;height:20px" />
-                  </span>
-                  <span class="font-mono text-[10px] px-2 py-1 rounded-md border" style={`color:${p.accent}; border-color:color-mix(in oklab, ${p.accent} 35%, transparent)`}>{p.status}</span>
+              <article class="skill-item reveal panel glow-card p-4" data-group={s.group} style={`--accent:${g.accent}`}>
+                <div class="flex items-start justify-between gap-3 mb-2.5">
+                  <h3 class="font-bold text-[13px] leading-snug text-graphite dark:text-slate-100">{s.name}</h3>
+                  <span class="font-mono text-[11px] shrink-0 px-2 py-0.5 rounded-md border" style={`color:${g.accent}; border-color:color-mix(in oklab, ${g.accent} 40%, transparent)`}>{s.level}/5</span>
                 </div>
-                <h3 class="font-extrabold text-lg text-graphite dark:text-white mb-2">{p.name}</h3>
-                <p class="text-[13px] leading-relaxed text-slate-600 dark:text-slate-400 mb-4">{p.summary}</p>
-                <ul class="space-y-2 mb-5 flex-1">
-                  {p.points.map((pt) => (
-                    <li class="flex gap-2 text-[12px] leading-relaxed text-slate-500">
-                      <span class="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={`background:${p.accent}`}></span><span>{pt}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div class="flex flex-wrap gap-1.5">
-                  {p.stack.map((s) => <span class="chip font-mono" style={`--accent:${p.accent}`}>{s}</span>)}
+                <div class="flex gap-1.5 mb-2.5" aria-hidden="true">
+                  {[1, 2, 3, 4, 5].map((n) => <span class={`seg flex-1 ${n <= s.level ? 'on' : ''}`}></span>)}
                 </div>
+                <p class="text-[11.5px] leading-relaxed text-slate-500">{s.evidence}</p>
               </article>
             );
           })}
+        </div>
+
+        <!-- COVERAGE MATRIX -->
+        <div class="reveal mt-10">
+          <div class="flex items-start gap-3 mb-4">
+            <span class="font-mono text-xs text-cyan pt-1.5">06.1</span>
+            <div>
+              <h3 class="text-xl font-extrabold text-graphite dark:text-white">Матрица окружений</h3>
+              <p class="text-[13px] text-slate-500 mt-0.5">Где и в чём я реально проверяю продукт. Нажми на ячейку, чтобы увидеть, что именно там тестируется.</p>
+            </div>
+          </div>
+
+          <div class="panel glow-card p-5 sm:p-6" style="--accent: var(--color-cyan)">
+            <div class="flex flex-wrap gap-4 mb-5">
+              {Object.entries(stateMeta).map(([k, v]) => (
+                <span class="inline-flex items-center gap-2 font-mono text-[11px]" style={`color:${v.color}`}>
+                  <span class="grid place-items-center w-6 h-6 rounded-md border text-[13px] font-bold" style={`border-color:color-mix(in oklab, ${v.color} 40%, transparent)`}>{v.glyph}</span>
+                  {v.label}
+                </span>
+              ))}
+            </div>
+
+            <div class="overflow-x-auto -mx-1 px-1">
+              <table class="w-full min-w-[640px] border-separate" style="border-spacing:6px" id="matrix">
+                <thead>
+                  <tr>
+                    <th class="text-left font-mono text-[10px] uppercase tracking-widest text-slate-500 pb-1 pl-1 w-[190px]">Окружение</th>
+                    {browsers.map((b) => {
+                      const BIcon = icons[b.icon];
+                      return (
+                        <th class="mx-head font-semibold text-[11.5px] text-slate-500 pb-1 transition-colors" data-col={b.id}>
+                          <span class="inline-flex flex-col items-center gap-1">
+                            <BIcon style="width:16px;height:16px" />
+                            {b.name}
+                          </span>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {envMatrix.map((row) => {
+                    const RIcon = icons[row.icon];
+                    return (
+                      <tr>
+                        <th scope="row" class="mx-head text-left align-middle" data-row={row.id}>
+                          <span class="flex items-center gap-2.5 pl-1">
+                            <span class="grid place-items-center w-8 h-8 rounded-lg border border-paperedge dark:border-edge shrink-0"><RIcon style="width:15px;height:15px" /></span>
+                            <span>
+                              <span class="block font-bold text-[12.5px] text-graphite dark:text-slate-200">{row.name}</span>
+                              <span class="block font-mono text-[9.5px] text-slate-500">{row.sub}</span>
+                            </span>
+                          </span>
+                        </th>
+                        {browsers.map((b) => {
+                          const cell = row.cells[b.id];
+                          const meta = stateMeta[cell.s];
+                          const selected = row.id === defEnv.id && b.id === defBrowser.id;
+                          return (
+                            <td>
+                              <button type="button"
+                                class={`mx-cell ${selected ? 'sel' : ''}`}
+                                data-row={row.id} data-col={b.id}
+                                data-envname={row.name} data-browsername={b.name}
+                                data-state={meta.label} data-color={meta.color} data-note={cell.n}
+                                style={`color:${meta.color}; background:color-mix(in oklab, ${meta.color} ${cell.s === 'na' ? 4 : 10}%, transparent)`}
+                                aria-label={`${row.name} · ${b.name}: ${meta.label}`}>
+                                {meta.glyph}
+                              </button>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-5 rounded-xl border border-paperedge dark:border-edge p-4 bg-paper2/50 dark:bg-panel2/40" id="mx-readout" aria-live="polite">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span id="mx-env" class="font-bold text-[13px] text-graphite dark:text-white">{defEnv.name}</span>
+                <span class="text-slate-500 text-[13px]">·</span>
+                <span id="mx-browser" class="font-bold text-[13px] text-graphite dark:text-white">{defBrowser.name}</span>
+                <span id="mx-state" class="font-mono text-[10px] px-2 py-1 rounded-md border ml-auto" style={`color:${stateMeta[defCell.s].color}; border-color:color-mix(in oklab, ${stateMeta[defCell.s].color} 40%, transparent)`}>{stateMeta[defCell.s].label}</span>
+              </div>
+              <p id="mx-note" class="text-[12.5px] leading-relaxed text-slate-600 dark:text-slate-400">{defCell.n}</p>
+            </div>
+
+            <p class="mt-4 text-[12px] leading-relaxed text-slate-500 border-l-2 border-cyan pl-3">{coverageNote}</p>
+          </div>
         </div>
       </section>
 
