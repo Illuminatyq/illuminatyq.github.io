@@ -3,7 +3,7 @@ import { Shield, FlaskConical, Database, BarChart3, Play, RotateCcw, ExternalLin
 const stages = [
   { id: 'quality', name: 'quality', icon: Shield, desc: 'ruff check + format --check, mypy strict по всем исходникам. Стиль и типы до тестов.' },
   { id: 'unit', name: 'unit', icon: FlaskConical, desc: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).' },
-  { id: 'integration', name: 'integration', icon: Database, desc: 'pytest -m integration против реального Postgres 17 как service container в CI.' },
+  { id: 'integration', name: 'integration', icon: Database, desc: 'pytest -m alembic upgrade head против Postgres 17 service container, затем pytest -m integration: репозиторий и схема БД.' },
   { id: 'reports', name: 'reports', icon: BarChart3, desc: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.' },
 ];
 ---
@@ -86,7 +86,7 @@ const stages = [
   const DESC = {
     quality: 'ruff check + format --check, mypy strict по всем исходникам. Стиль и типы до тестов.',
     unit: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).',
-    integration: 'pytest -m integration против реального Postgres 17 как service container в CI.',
+    integration: 'alembic upgrade head против Postgres 17 service container, затем pytest -m integration: репозиторий и схема БД.',
     reports: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.',
   };
   const $ = (s) => document.querySelector(s);
