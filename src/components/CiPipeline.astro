@@ -1,0 +1,188 @@
+---
+import { Shield, FlaskConical, Database, BarChart3, Play, RotateCcw, ExternalLink } from 'lucide-astro';
+const stages = [
+  { id: 'quality', name: 'quality', icon: Shield, desc: 'ruff check + format --check, mypy strict по всем исходникам. Стиль и типы до тестов.' },
+  { id: 'unit', name: 'unit', icon: FlaskConical, desc: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).' },
+  { id: 'integration', name: 'integration', icon: Database, desc: 'pytest -m integration против реального Postgres 17 как service container в CI.' },
+  { id: 'reports', name: 'reports', icon: BarChart3, desc: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.' },
+];
+---
+<section id="pipeline" class="py-14" style="--accent: var(--color-cyan)">
+  <div class="reveal flex items-start gap-4 mb-3">
+    <span class="font-mono text-xs text-cyan pt-2">03.1</span>
+    <div class="flex-1">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-graphite dark:text-white">CI/CD пайплайн JobFit</h2>
+      <p class="text-sm text-slate-500 mt-1">Реальный последний прогон из GitHub Actions. Нажми «Проиграть», чтобы увидеть стадии по очереди.</p>
+    </div>
+  </div>
+
+  <div class="reveal panel glow-card p-5 sm:p-6" id="cp-root">
+    <div class="flex flex-wrap items-center gap-3 mb-5">
+      <span id="cp-verdict" class="font-mono text-[11px] px-2.5 py-1 rounded-md border inline-flex items-center gap-2">…</span>
+      <span id="cp-meta" class="font-mono text-[11px] text-slate-500"></span>
+      <span id="cp-demo" class="hidden font-mono text-[10px] px-2 py-0.5 rounded-md border border-flaky/40 text-flaky">demo</span>
+      <div class="ml-auto flex gap-2">
+        <button id="cp-play" type="button" class="inline-flex items-center gap-2 px-4 h-9 rounded-xl bg-brand text-white text-[12px] font-bold hover:bg-cyan hover:text-graphite transition-colors">
+          <Play style="width:14px;height:14px" /> Проиграть
+        </button>
+        <button id="cp-refresh" type="button" class="grid place-items-center w-9 h-9 rounded-xl border border-paperedge dark:border-edge hover:border-cyan transition-colors" aria-label="Обновить">
+          <RotateCcw style="width:15px;height:15px" />
+        </button>
+        <a href="https://github.com/Illuminatyq/jobfit/actions" target="_blank" rel="noopener" class="grid place-items-center w-9 h-9 rounded-xl border border-paperedge dark:border-edge hover:border-cyan transition-colors" aria-label="Actions">
+          <ExternalLink style="width:15px;height:15px" />
+        </a>
+      </div>
+    </div>
+
+    <div class="cp-track mb-5">
+      {stages.map((s, i) => {
+        const Icon = s.icon;
+        return (
+          <div class="cp-step">
+            {i > 0 && <span class="cp-line" data-line={s.id}></span>}
+            <button type="button" class="cp-node" data-node={s.id} aria-label={s.name}>
+              <Icon style="width:18px;height:18px" />
+              <span class="font-mono text-[11px] font-bold mt-1.5">{s.name}</span>
+              <span class="font-mono text-[10px] mt-1" data-status={s.id}>QUEUE</span>
+              <span class="font-mono text-[10px] text-slate-500" data-dur={s.id}>—</span>
+            </button>
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="rounded-xl border border-paperedge dark:border-edge p-4 bg-paper2/50 dark:bg-panel2/40 mb-5" id="cp-readout" aria-live="polite">
+      <div class="flex flex-wrap items-center gap-2 mb-1.5">
+        <span id="cp-r-name" class="font-bold text-[13px] text-graphite dark:text-white">quality</span>
+        <span id="cp-r-status" class="font-mono text-[10px] px-2 py-0.5 rounded-md border ml-auto">QUEUE</span>
+      </div>
+      <p id="cp-r-desc" class="text-[12.5px] leading-relaxed text-slate-600 dark:text-slate-400"></p>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <a href="https://illuminatyq.github.io/jobfit/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg border border-paperedge dark:border-edge text-[11px] font-bold hover:border-brand hover:text-brand transition-colors">Allure <ExternalLink style="width:12px;height:12px" /></a>
+      <a href="https://illuminatyq.github.io/jobfit/eval/latest.md" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg border border-paperedge dark:border-edge text-[11px] font-bold hover:border-brand hover:text-brand transition-colors">Eval <ExternalLink style="width:12px;height:12px" /></a>
+      <a href="https://github.com/Illuminatyq/jobfit" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 h-8 rounded-lg border border-paperedge dark:border-edge text-[11px] font-bold hover:border-brand hover:text-brand transition-colors">Repo <ExternalLink style="width:12px;height:12px" /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cp-track { display: flex; align-items: stretch; gap: 0; }
+  .cp-step { flex: 1; display: flex; align-items: center; min-width: 0; }
+  .cp-line { flex: 0 0 18px; height: 2px; background: color-mix(in oklab, var(--color-cyan) 25%, transparent); position: relative; overflow: hidden; }
+  .cp-line::after { content: ''; position: absolute; inset: 0; background: var(--color-cyan); transform: scaleX(0); transform-origin: left; transition: transform .4s ease; }
+  .cp-line.on::after { transform: scaleX(1); }
+  .cp-node { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 14px 8px; border-radius: 14px; border: 1px solid color-mix(in oklab, var(--color-cyan) 30%, transparent); background: color-mix(in oklab, var(--color-cyan) 7%, transparent); color: var(--color-cyan); transition: all .25s ease; min-width: 0; }
+  .cp-node:hover { border-color: var(--color-cyan); transform: translateY(-2px); }
+  .cp-node.sel { border-color: var(--color-cyan); box-shadow: 0 0 0 1px var(--color-cyan); }
+  @media (max-width: 640px) { .cp-track { flex-direction: column; } .cp-line { flex: 0 0 14px; width: 2px; height: 14px; margin: 0 auto; } .cp-line::after { transform: scaleY(0); transform-origin: top; } .cp-line.on::after { transform: scaleY(1); } }
+</style>
+
+<script>
+  const API = 'https://api.github.com/repos/Illuminatyq/jobfit/actions';
+  const COLORS = { pass: 'var(--color-pass)', fail: 'var(--color-fail)', running: 'var(--color-cyan)', pending: '#6b7c9e', skip: 'var(--color-skip)' };
+  const LABEL = { pass: 'PASS', fail: 'FAIL', running: 'RUN', pending: 'QUEUE', skip: 'SKIP' };
+  const DESC = {
+    quality: 'ruff check + format --check, mypy strict по всем исходникам. Стиль и типы до тестов.',
+    unit: 'pytest unit/eval/api: покрытие, junit, eval-гейты на golden-датасете (F1, coverage MAE, детерминизм).',
+    integration: 'pytest -m integration против реального Postgres 17 как service container в CI.',
+    reports: 'Allure generate с трендом + eval-отчёт, автопубликация на Pages через gh-pages.',
+  };
+  const $ = (s) => document.querySelector(s);
+  const root = $('#cp-root');
+  if (root) {
+    let data = null;
+    const setNode = (id, status, dur) => {
+      const st = root.querySelector(`[data-status="${id}"]`);
+      const du = root.querySelector(`[data-dur="${id}"]`);
+      const node = root.querySelector(`[data-node="${id}"]`);
+      const c = COLORS[status] || COLORS.pending;
+      st.textContent = LABEL[status] || status;
+      st.style.color = c;
+      node.style.color = c;
+      node.style.borderColor = `color-mix(in oklab, ${c} 45%, transparent)`;
+      node.style.background = `color-mix(in oklab, ${c} 9%, transparent)`;
+      if (dur != null) du.textContent = dur;
+    };
+    const setVerdict = (kind, text) => {
+      const v = $('#cp-verdict');
+      const c = COLORS[kind] || COLORS.pending;
+      v.textContent = text;
+      v.style.color = c;
+      v.style.borderColor = `color-mix(in oklab, ${c} 45%, transparent)`;
+    };
+    const select = (id) => {
+      root.querySelectorAll('.cp-node').forEach((n) => n.classList.toggle('sel', n.dataset.node === id));
+      $('#cp-r-name').textContent = id;
+      const d = data && data.stages[id];
+      const status = d ? d.status : 'pending';
+      const rs = $('#cp-r-status');
+      rs.textContent = LABEL[status] || status;
+      rs.style.color = COLORS[status] || COLORS.pending;
+      $('#cp-r-desc').textContent = DESC[id];
+    };
+    const render = () => {
+      Object.keys(DESC).forEach((id) => {
+        const d = data.stages[id];
+        setNode(id, d.status, d.dur);
+      });
+      setVerdict(data.verdict, data.verdictText);
+      $('#cp-meta').textContent = `${data.sha} · ${data.date}`;
+      $('#cp-demo').classList.toggle('hidden', !data.demo);
+      select('quality');
+    };
+    const demo = () => ({
+      demo: true, sha: 'demo000', date: 'synthetic', verdict: 'pass', verdictText: 'BUILD PASSED · demo',
+      stages: { quality: { status: 'pass', dur: '12s' }, unit: { status: 'pass', dur: '31s' }, integration: { status: 'pass', dur: '24s' }, reports: { status: 'pass', dur: '18s' } },
+    });
+    const load = async () => {
+      try {
+        const ci = await (await fetch(`${API}/workflows/ci.yml/runs?per_page=1`)).json();
+        const run = ci.workflow_runs && ci.workflow_runs[0];
+        if (!run) throw new Error('no runs');
+        const jobs = await (await fetch(`${API}/runs/${run.id}/jobs`)).json();
+        const rep = await (await fetch(`${API}/workflows/report.yml/runs?per_page=1`)).json();
+        const rrun = rep.workflow_runs && rep.workflow_runs[0];
+        const byName = {};
+        (jobs.jobs || []).forEach((j) => { byName[j.name] = j; });
+        const mk = (j) => j ? {
+          status: j.status === 'completed' ? (j.conclusion === 'success' ? 'pass' : j.conclusion === 'skipped' ? 'skip' : 'fail') : 'running',
+          dur: j.started_at && j.completed_at ? Math.round((new Date(j.completed_at) - new Date(j.started_at)) / 1000) + 's' : '—',
+        } : { status: 'pending', dur: '—' };
+        const stages = { quality: mk(byName.quality), unit: mk(byName.unit), integration: mk(byName.integration), reports: mk(rrun ? { status: rrun.status, conclusion: rrun.conclusion, started_at: rrun.run_started_at, completed_at: rrun.updated_at } : null) };
+        const failed = Object.values(stages).some((s) => s.status === 'fail');
+        data = {
+          demo: false, sha: (run.head_sha || '').slice(0, 7), date: new Date(run.created_at).toLocaleString('ru-RU'),
+          verdict: failed ? 'fail' : 'pass', verdictText: failed ? 'BUILD FAILED' : 'BUILD PASSED', stages,
+        };
+      } catch (e) { data = demo(); }
+      render();
+    };
+    const play = () => {
+      const ids = Object.keys(DESC);
+      ids.forEach((id) => { setNode(id, 'pending', '—'); const l = root.querySelector(`[data-line="${id}"]`); if (l) l.classList.remove('on'); });
+      setVerdict('running', 'RUNNING…');
+      let i = 0;
+      const step = () => {
+        if (i >= ids.length) { setVerdict(data.verdict, data.verdictText); return; }
+        const id = ids[i];
+        const line = root.querySelector(`[data-line="${id}"]`);
+        if (line) line.classList.add('on');
+        setNode(id, 'running', '…');
+        select(id);
+        setTimeout(() => {
+          const d = data.stages[id];
+          setNode(id, d.status, d.dur);
+          i++;
+          setTimeout(step, 220);
+        }, 650);
+      };
+      step();
+    };
+    root.querySelectorAll('.cp-node').forEach((n) => n.addEventListener('click', () => select(n.dataset.node)));
+    $('#cp-play').addEventListener('click', play);
+    $('#cp-refresh').addEventListener('click', load);
+    load();
+  }
+</script>
