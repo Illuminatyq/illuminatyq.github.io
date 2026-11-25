@@ -264,7 +264,7 @@ html:not(.dark) .term { background: #0b1020; }
   .panel, .spec-card, .hud-badge { background: #fff !important; border: 1px solid #ccc !important; box-shadow: none !important; backdrop-filter: none !important; }
   .acc { grid-template-rows: 1fr !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
-  .seg { background: #ddd !important; box-shadow: none !important; }
+  .seg { background: #ece6d8 !important; box-shadow: none !important; }
   .seg.on { background: #333 !important; box-shadow: none !important; }
   section { break-inside: avoid; page-break-inside: avoid; }
   a { color: #000 !important; text-decoration: underline; }
